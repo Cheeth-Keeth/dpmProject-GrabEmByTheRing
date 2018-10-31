@@ -12,7 +12,7 @@ import lejos.robotics.SampleProvider;
 
 public class UltrasonicLocalizer {
 	private static final double D = 45; //D value for wall detection
-	private static final int DETECT_SPEED = Project.DETECT_SPEED;
+	private static final int DETECT_SPEED = Project.LOW_SPEED;
 	private static final double WHEEL_RAD = Project.WHEEL_RAD; 
 	private static final double TRACK = Project.TRACK;  
 	

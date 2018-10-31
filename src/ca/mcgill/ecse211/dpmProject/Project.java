@@ -8,6 +8,7 @@ import lejos.hardware.Button;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.robotics.SampleProvider;
 import lejos.hardware.Sound;
@@ -27,8 +28,7 @@ import lejos.hardware.Sound;
 ////////////////////////////////////////////////////////////////////////////////
 
 public class Project {
-	//These are the inputs, will be provided before the demo, re-enter them before running
-	//0,3,3,7,7 are defaults for report testing
+	//inputs and parameters  that will be aquired from the wifi class
 	public static final int SC = 0;
 	public static final int TR = 2;
 	public static final double LLx = 2;		//left lower x
@@ -36,48 +36,56 @@ public class Project {
 	public static final double URx = 5;		//upper right x
 	public static final double URy = 6;		//upper right y
 	public static final double usRange = 1.75;
+	
 	// The parameters for driving the robot
 	public static final double OFF_SET = 14.65; //this is the offset from the back line-detecting light sensor to the wheelbase
 	public static final double OFF_SET_R = 4; //this is the offset from the right side ultrasonic sensor to the wheelbase
-	public static final int DETECT_SPEED = 40; //this is the slow speed for precious detection 
-	public static final int ROTATE_SPEED = 100;
-	public static final int MOVE_SPEED = 200; 
+	public static final double HOOK_SPEED = 10; //this is the speed used for the motor 
+	public static final int LOW_SPEED = 50; //this is the slow speed for precious movement 
+	public static final int MEDIUM_SPEED = 100; //this is the medium speed for intermediate movement
+	public static final int HIGH_SPEED = 200; //this is the fast motor speed for less precious, faster movement (long distace travel)
 	public static final double WHEEL_RAD = 2.085; 
 	public static final double TRACK = 14.2;
 	public static final double TILE_SIZE = 30.48;
 	public static final int DETECT_DISTANCE = (int)(usRange*TILE_SIZE); //detection bandcenter for the right side ultrasonic sensor /// ahmed: you can modify this 
 	public static final int RING_BAND = 20; //detection bandcenter for moving lose up to the ring for color identification 
+	public static final int THRESHOLD = 300; //this is the line detection threshold for the line deteting color sensors
 	
-	public static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
-	public static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
+	//create port and object for the motors (4 in total)
+	public static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A")); //the motor for the left wheel
+	public static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B")); //the motor for the right wheel
+	public static final EV3LargeRegulatedMotor armMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C")); //the motor for raising/lowering the arm 
+	public static final EV3MediumRegulatedMotor hookMotor = new EV3MediumRegulatedMotor(LocalEV3.get().getPort("D")); //the motor for motorizing the hooks 
+	
+	//create object for the lcd display
 	public static final TextLCD lcd = LocalEV3.get().getTextLCD();
 	
-	//create port and object for the light sensor for line detection in the back
-	public static final Port portLine = LocalEV3.get().getPort("S4"); // get the port for the light (color sensor)
-	public static final SensorModes myLine = new EV3ColorSensor(portLine); // create the color sensor object;
-	public static final SampleProvider myLineSample = myLine.getMode("Red");
-	public static final float[] sampleLine = new float[myLine.sampleSize()]; // create an array for the sensor
-																				// readings	
-	// create port and object for the light sensor for color recognition in the front
-	public static final Port portColor = LocalEV3.get().getPort("S1"); // get the port for the light (color sensor)
-	public static final SensorModes myColor = new EV3ColorSensor(portColor); // create the color sensor object;
-	public static final SampleProvider myColorSample = myColor.getMode("RGB");
-	public static final float[] sampleColor = new float[3]; // create an array for the sensor
-																				// readings
 	// create port and object for the ultrasonic sensor in the front (used for ultrasonic localization and when approaching the ring)
-	public static final Port usPort = LocalEV3.get().getPort("S3");
+	public static final Port usPort = LocalEV3.get().getPort("S1");
 	@SuppressWarnings("resource") // Because we don't bother to close this resource
 	public static SensorModes usSensor = new EV3UltrasonicSensor(usPort); // usSensor is the instance
 	public static SampleProvider usDistance = usSensor.getMode("Distance"); // usDistance provides samples from
 	public static final float[] usData = new float[usDistance.sampleSize()];
+	
+	// create port and object for the light sensor for color recognition which is installed on the arm
+	public static final Port portColor = LocalEV3.get().getPort("S2"); // get the port for the light (color sensor)
+	public static final SensorModes myColor = new EV3ColorSensor(portColor); // create the color sensor object
+	public static final SampleProvider myColorSample = myColor.getMode("RGB"); //set to RGB mode
+	public static final float[] sampleColor = new float[3]; // create an array for the sensor readings
+	
+	//create port and object for the first light sensor for line detection in the left front
+	public static final Port portLeftLine = LocalEV3.get().getPort("S3"); // get the port for the left front light sensor
+	public static final SensorModes myLeftLine = new EV3ColorSensor(portLeftLine); // create the light sensor object
+	public static final SampleProvider myLeftLineSample = myLeftLine.getMode("Red"); //set to Red mode
+	public static final float[] sampleLeftLine = new float[myLeftLine.sampleSize()]; // create an array for the sensor readings 
+	
+	//create port and object for the second light sensor for line detection in the right front
+	public static final Port portRightLine = LocalEV3.get().getPort("S4"); // get the port for the right front light sensor
+	public static final SensorModes myRightLine = new EV3ColorSensor(portRightLine); // create the light sensor object
+	public static final SampleProvider myRightLineSample = myRightLine.getMode("Red"); //set to Red mode
+	public static final float[] sampleRightLine = new float[myRightLine.sampleSize()]; // create an array for the sensor readings 
+																			
 
-	// create port and object for the ultrasonic sensor on the right side of the robot for detecting the ring (denoted by R)
-	//when traveling around the search area perimeter
-	public static final Port usPortR = LocalEV3.get().getPort("S2");
-	@SuppressWarnings("resource") // Because we don't bother to close this resource
-	public static SensorModes usSensorR = new EV3UltrasonicSensor(usPortR); // usSensor is the instance
-	public static SampleProvider usDistanceR = usSensorR.getMode("Distance"); // usDistance provides samples from
-	public static final float[] usDataR = new float[usDistanceR.sampleSize()];
 	
 	/**
 	 * This is the main method for the lab, it will prompt the user to choose which functionality to execute

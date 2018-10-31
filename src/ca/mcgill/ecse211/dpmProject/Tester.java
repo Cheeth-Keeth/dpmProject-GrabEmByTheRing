@@ -99,8 +99,8 @@ public class Tester {
 	public static void usSample(Odometer odometer) {
 		System.out.println("start US sampling");
 		int ringCount = 0;
-		SampleProvider usDistanceR = Project.usDistanceR;
-		float[] usDataR = Project.usDataR;
+		SampleProvider usDistance = Project.usDistance;
+		float[] usData = Project.usData;
 
 		boolean foundRing = false;
 		leftMotor.setSpeed(100);
@@ -108,8 +108,8 @@ public class Tester {
 		while (foundRing == false) {
 			leftMotor.forward();
 			rightMotor.forward();
-			usDistanceR.fetchSample(usDataR, 0);
-			int distance = (int) (usDataR[0] * 100.0);
+			usDistance.fetchSample(usData, 0);
+			int distance = (int) (usData[0] * 100.0);
 			System.out.println(distance);
 			if (distance < Project.DETECT_DISTANCE) {
 				ringCount++;
