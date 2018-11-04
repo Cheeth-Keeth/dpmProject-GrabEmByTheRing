@@ -24,6 +24,7 @@ public class UltrasonicLocalizer {
 	private static final SampleProvider myRightLineSample = Project.myRightLineSample;
 	private static final float[] sampleRightLine = Project.sampleRightLine;
 	
+	private static final double TILE_SIZE = Project.TILE_SIZE;
 	private static final int THRESHOLD = Project.THRESHOLD;
 /////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -150,6 +151,8 @@ public class UltrasonicLocalizer {
 	  	    
 	  	    leftTurn = -1;
 	  	    rightTurn = 1;
+	  	    
+	  	    odometer.setXYT(TILE_SIZE, TILE_SIZE, 0);
   	    
   	    }
 		

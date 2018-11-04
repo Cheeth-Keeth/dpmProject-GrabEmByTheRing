@@ -268,7 +268,7 @@ public class Navigation {
 	    
 	  }
 	
-//////////////////////////////Ethans hack travel to//////////////////////////////////////////////
+//////////////////////////////Ethans hack travel to dont think will need it though//////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 	
 	public static void ethanTravelTo(int x, int y, EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
@@ -333,5 +333,104 @@ public class Navigation {
   	    }	
 		
 	}
-
+	
+	
+	public static void tunnelTravel(double x, double y, Odometer odometer, EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
+		
+		double currentX = odometer.getXYT()[0]; //get the current x position in cm
+		double currentY = odometer.getXYT()[1]; //get the current y position in cm
+		double currentT = odometer.getXYT()[2]; //get the current direction in degrees
+		
+		leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 90),true);
+  	    rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 90),false);	
+		
+//////////////////////////////5 is a hard coded value must be tested//////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+  	    leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE/2 + 5),true);
+  	  	rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE/2 + 5),false);
+  	  	
+  	  	leftMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 90),true);
+	    rightMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 90),false);
+	    
+	    boolean leftDetected = false;
+  	    boolean rightDetected = false;
+	    
+	    while (leftDetected && rightDetected) {
+  	    	
+			leftMotor.backward();
+			rightMotor.backward();
+  	    	
+  	    	myLeftLine.fetchSample(sampleLeftLine, 0); //get the reading from the sensor
+		    float leftRead = sampleLeftLine[0]*1000;  //multiply the read by 1000 as suggested in the class slides
+			if (leftRead<THRESHOLD) {
+				leftDetected = true;
+				leftMotor.stop();
+			}
+			myLeftLine.fetchSample(sampleLeftLine, 0); //get the reading from the sensor
+		    float rightRead = sampleLeftLine[0]*1000;  //multiply the read by 1000 as suggested in the class slides
+			if (rightRead<THRESHOLD) {
+				rightDetected = true;
+				rightMotor.stop();
+			}
+  	    	
+  	    }
+	    
+	    leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, 2.5*TILE_SIZE),true);
+  	  	rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, 2.5*TILE_SIZE),false);
+  	  	
+  	  	int localizationCount = 0;
+  	  	
+  	  	int leftTurn = 1;
+	    int rightTurn = -1;
+  	  			
+  	  	while (localizationCount != 2) {
+    	    
+	  	    while (leftDetected && rightDetected) {
+	  	    	
+				leftMotor.forward();
+				rightMotor.forward();
+	  	    	
+	  	    	myLeftLine.fetchSample(sampleLeftLine, 0); //get the reading from the sensor
+			    float leftRead = sampleLeftLine[0]*1000;  //multiply the read by 1000 as suggested in the class slides
+				if (leftRead<THRESHOLD) {
+					leftDetected = true;
+					leftMotor.stop();
+				}
+				myLeftLine.fetchSample(sampleLeftLine, 0); //get the reading from the sensor
+			    float rightRead = sampleLeftLine[0]*1000;  //multiply the read by 1000 as suggested in the class slides
+				if (rightRead<THRESHOLD) {
+					rightDetected = true;
+					rightMotor.stop();
+				}
+	  	    	
+	  	    }
+	  	    
+	  	    //////////////////////////////5 is a hard coded value must be tested//////////////////////////////////////////////
+	  	    ///////////////////////////////////////////////////////////////////
+	  	    leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, 5),true);
+	  	  	rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, 5),false);
+	  	  	
+	  	  	leftMotor.stop(true);
+	  	    rightMotor.stop(false);
+	  	    
+	  	    leftMotor.rotate(leftTurn * Navigation.convertAngle(WHEEL_RAD, TRACK, 90),true);
+	  	    rightMotor.rotate(rightTurn * Navigation.convertAngle(WHEEL_RAD, TRACK, 90),false);
+	  	    
+	  	    leftMotor.stop(true);
+	  	    rightMotor.stop(false);
+	  	    
+	  	    localizationCount++;
+	  	    
+	  	    leftDetected = false;
+	  	    rightDetected = false;
+	  	    
+	  	    leftTurn = -1;
+	  	    rightTurn = 1;
+	    
+	    }
+	    
+  	  odometer.setXYT(currentX + TILE_SIZE*1, currentY + TILE_SIZE*3, 0);
+		
+	}
+ 
 }
