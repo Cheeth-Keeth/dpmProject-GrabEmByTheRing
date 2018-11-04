@@ -177,7 +177,7 @@ public class Navigation {
 	  	    
   	    }
 
-  	  odometer.setXYT(x1, y1, 0);
+  	  odometer.setXYT(x*TILE_SIZE, y*TILE_SIZE, 0);
 		
 	}
 	
