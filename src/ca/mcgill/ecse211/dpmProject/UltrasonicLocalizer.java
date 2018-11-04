@@ -2,15 +2,32 @@ package ca.mcgill.ecse211.dpmProject;
 
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
+import lejos.hardware.port.Port;
+import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.hardware.sensor.SensorModes;
+
 /**
  * This class is used for localizing the robot using only ultrasonic sensor
  * @author team12
  */
-////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////NEED TO CHANGE/////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
 
 public class UltrasonicLocalizer {
+	
+////////////////Imported from light localization cuz not down to make two files///////////////////////
+	private static final Port portLine = Project.portLeftLine;
+	private static final SensorModes myLeftLine = Project.myLeftLine;
+	private static final SampleProvider myLeftLineSample = Project.myLeftLineSample;
+	private static final float[] sampleLeftLine = Project.sampleLeftLine;
+	
+	private static final Port portRightLine = Project.portRightLine;
+	private static final SensorModes myRightLine = Project.myRightLine;
+	private static final SampleProvider myRightLineSample = Project.myRightLineSample;
+	private static final float[] sampleRightLine = Project.sampleRightLine;
+	
+	private static final int THRESHOLD = Project.THRESHOLD;
+/////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
 	private static final double D = 45; //D value for wall detection
 	private static final int DETECT_SPEED = Project.LOW_SPEED;
 	private static final double WHEEL_RAD = Project.WHEEL_RAD; 
@@ -27,6 +44,116 @@ public class UltrasonicLocalizer {
 	 * @param rightMotor the right motor of the robot
 	 */
 	static void fallingEdge(SampleProvider usDistance, float[] usData, Odometer odometer, EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
+		
+		int distance;
+		usDistance.fetchSample(usData, 0);
+		distance = (int) (usData[0] * 100.0); 
+		
+		//rotate counter clockwise until no wall is found (can be optimized with a check to see whether the turn should be clockwise
+		//or counter clockwise depending on initial distacne 
+		while (distance < 255) {
+			
+			for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] {leftMotor, rightMotor}) {
+		  	      motor.stop();
+			      motor.setAcceleration(3000);
+	  		    }
+			
+			leftMotor.setSpeed(DETECT_SPEED); 
+	  	    rightMotor.setSpeed(DETECT_SPEED);
+	  	    
+	  	    leftMotor.backward();
+		    rightMotor.forward();
+			
+		    usDistance.fetchSample(usData, 0);
+  		    distance = (int) (usData[0] * 100.0); 		    
+		    
+		}
+		
+		//once no wall is found continue to turn counter clockwise until the wall is found
+		//this garentees that we are facing the back left wall
+		while (distance > D) {
+			
+			for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] {leftMotor, rightMotor}) {
+		  	      motor.stop();
+			      motor.setAcceleration(3000);
+	  		    }
+			
+			leftMotor.setSpeed(DETECT_SPEED); 
+	  	    rightMotor.setSpeed(DETECT_SPEED);
+	  	    
+	  	    leftMotor.backward();
+		    rightMotor.forward();
+			
+		    usDistance.fetchSample(usData, 0);
+  		    distance = (int) (usData[0] * 100.0); 		    
+		    
+		}
+		
+		//hard coded value "50" to be determined by test
+		leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 50), true);
+  	    rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 50), false);
+  	    
+//////////////////////////////Begin "light localization"//////////////////////////////////////////////
+/////////////////////////////Drive forward until line detected by both sensors//////////////////////////////////////
+  	    
+  	    leftMotor.forward();
+	    rightMotor.forward();
+  	    
+  	    boolean leftDetected = false;
+  	    boolean rightDetected = false;
+  	    
+  	    int localizationCount = 0;
+  	    
+  	    int leftTurn = 1;
+  	    int rightTurn = -1;
+  	    
+  	    while (localizationCount != 2) {
+  	    
+	  	    while (leftDetected && rightDetected) {
+	  	    	
+				leftMotor.forward();
+				rightMotor.forward();
+	  	    	
+	  	    	myLeftLine.fetchSample(sampleLeftLine, 0); //get the reading from the sensor
+			    float leftRead = sampleLeftLine[0]*1000;  //multiply the read by 1000 as suggested in the class slides
+				if (leftRead<THRESHOLD) {
+					leftDetected = true;
+					leftMotor.stop();
+				}
+				myLeftLine.fetchSample(sampleLeftLine, 0); //get the reading from the sensor
+			    float rightRead = sampleLeftLine[0]*1000;  //multiply the read by 1000 as suggested in the class slides
+				if (rightRead<THRESHOLD) {
+					rightDetected = true;
+					rightMotor.stop();
+				}
+	  	    	
+	  	    }
+	  	    
+	  	    //////////////////////////////5 is a hard coded value must be tested//////////////////////////////////////////////
+	  	    ///////////////////////////////////////////////////////////////////
+	  	    leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, 5),true);
+	  	  	rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, 5),false);
+	  	  	
+	  	  	leftMotor.stop(true);
+	  	    rightMotor.stop(false);
+	  	    
+	  	    leftMotor.rotate(leftTurn * Navigation.convertAngle(WHEEL_RAD, TRACK, 90),true);
+	  	    rightMotor.rotate(rightTurn * Navigation.convertAngle(WHEEL_RAD, TRACK, 90),false);
+	  	    
+	  	    leftMotor.stop(true);
+	  	    rightMotor.stop(false);
+	  	    
+	  	    localizationCount++;
+	  	    
+	  	    leftDetected = false;
+	  	    rightDetected = false;
+	  	    
+	  	    leftTurn = -1;
+	  	    rightTurn = 1;
+  	    
+  	    }
+		
+		/*
 		int distance;
 		usDistance.fetchSample(usData, 0);
 		distance = (int) (usData[0] * 100.0); 
@@ -129,6 +256,8 @@ public class UltrasonicLocalizer {
 		else {
 			risingEdge(usDistance, usData, odometer, leftMotor, rightMotor);
 		}
+		
+		*/
 
 	}
 	
