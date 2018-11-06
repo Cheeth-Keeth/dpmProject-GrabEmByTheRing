@@ -152,24 +152,4 @@ public class Color {
 		
 	}
 	
-	/**
-	 * this method is used for the colro demo each sampling takes 5 seconds
-	 * @throws InterruptedException
-	 */
-	public static void colorDemo() throws InterruptedException {
-		//fetch front sonic sensor reading, if the sensor detect a ring then detect color (then  wait for 5 seconds)
-		usDistance.fetchSample(usData, 0);
-		int distance = (int)(usData[0]*100.0);
-		int count =0;
-		while(count<5 && distance < 10) {
-			int color = Color.color();
-			Sound.beep();
-			if (color == 1) System.out.println("blue" + smallest);
-			if (color == 2) System.out.println("green" + smallest);
-			if (color == 3) System.out.println("yellow" + smallest);
-			if (color == 4) System.out.println("orange" + smallest);
-			count++;
-			TimeUnit.SECONDS.sleep(5);
-		}
-	}
 }

@@ -25,6 +25,7 @@ public class Tester {
 	public static final EV3LargeRegulatedMotor leftMotor = Project.leftMotor;
 	public static final EV3LargeRegulatedMotor rightMotor = Project.rightMotor;
 	
+	
 	/**
 	 * this method is used for rgb reading collection for mean and std calculations 
 	 */
@@ -111,7 +112,7 @@ public class Tester {
 			usDistance.fetchSample(usData, 0);
 			int distance = (int) (usData[0] * 100.0);
 			System.out.println(distance);
-			if (distance < Project.DETECT_DISTANCE) {
+			if (distance < 20) {
 				ringCount++;
 			} else {
 				ringCount = 0;

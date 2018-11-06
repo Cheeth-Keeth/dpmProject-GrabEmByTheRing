@@ -19,9 +19,7 @@ public class Navigation {
 	  private static final double WHEEL_RAD = Project.WHEEL_RAD;
 	  private static final double TRACK = Project.TRACK;
 	  private static final double TILE_SIZE = Project.TILE_SIZE;
-	  
-	  //////////////////////////////Ethans values//////////////////////////////////////////////
-	  ///////////////////////////////////////////////////////////////////
+	  private static final double OFF_SET = Project.OFF_SET;
 	  
 	  private static final Port portLine = Project.portLeftLine;
 	  private static final SensorModes myLeftLine = Project.myLeftLine;
@@ -346,8 +344,8 @@ public class Navigation {
 		
 //////////////////////////////5 is a hard coded value must be tested//////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
-  	    leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE/2 + 5),true);
-  	  	rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE/2 + 5),false);
+  	    leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE/2 + OFF_SET),true);
+  	  	rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE/2 + OFF_SET),false);
   	  	
   	  	leftMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 90),true);
 	    rightMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 90),false);
@@ -405,10 +403,8 @@ public class Navigation {
 	  	    	
 	  	    }
 	  	    
-	  	    //////////////////////////////5 is a hard coded value must be tested//////////////////////////////////////////////
-	  	    ///////////////////////////////////////////////////////////////////
-	  	    leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, 5),true);
-	  	  	rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, 5),false);
+	  	    leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET),true);
+	  	  	rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET),false);
 	  	  	
 	  	  	leftMotor.stop(true);
 	  	    rightMotor.stop(false);
