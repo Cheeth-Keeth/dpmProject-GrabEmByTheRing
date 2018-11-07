@@ -31,16 +31,16 @@ public class Localizer {
 	private static final SampleProvider myColorSample = Project.myColorSample; //set to RGB mode
 	private static final float[] sampleColor = Project.sampleColor; // create an array for the sensor readings
 	
-	public static final Port usPort = LocalEV3.get().getPort("S1");
+	public static final Port usPort = Project.usPort ;
 	@SuppressWarnings("resource") // Because we don't bother to close this resource
-	public static SensorModes usSensor = new EV3UltrasonicSensor(usPort); // usSensor is the instance
-	public static SampleProvider usDistance = usSensor.getMode("Distance"); // usDistance provides samples from
-	public static final float[] usData = new float[usDistance.sampleSize()]; //create an array for the sensor readings
+	public static SensorModes usSensor = Project.usSensor; // usSensor is the instance
+	public static SampleProvider usDistance = Project.usDistance; // usDistance provides samples from
+	public static final float[] usData = Project.usData; //create an array for the sensor readings
 	
-	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A")); //the motor for the left wheel
-	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B")); //the motor for the right wheel
-	private static final EV3LargeRegulatedMotor armMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C")); //the motor for raising/lowering the arm 
-	private static final EV3MediumRegulatedMotor hookMotor = new EV3MediumRegulatedMotor(LocalEV3.get().getPort("D")); //the motor for motorizing the hooks 
+	private static final EV3LargeRegulatedMotor leftMotor = Project.leftMotor; //the motor for the left wheel
+	private static final EV3LargeRegulatedMotor rightMotor = Project.rightMotor; //the motor for the right wheel
+	private static final EV3LargeRegulatedMotor armMotor = Project.armMotor; //the motor for raising/lowering the arm 
+	private static final EV3MediumRegulatedMotor hookMotor =Project.hookMotor; //the motor for motorizing the hooks 
 	
 	private static final double OFF_SET = Project.OFF_SET;
 	private static final double TILE_SIZE = Project.TILE_SIZE;
