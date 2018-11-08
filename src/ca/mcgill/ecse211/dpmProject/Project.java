@@ -14,8 +14,11 @@ import lejos.hardware.Sound;
 
 /**
  * This is the main class for project SCARAB; 
+ *<p>
  * It contains almost all the parameters/sensor initiations, as well as the parameters needed for the operation 
+ * <P>
  * It will interact with the user through the EV3 module's display and buttons
+ * <P>
  * The routines are performed as consecutive methods within threads
  * @author Team12
  *
@@ -86,7 +89,7 @@ public class Project {
 	public static final int MEDIUM_SPEED = 100; //this is the medium speed for intermediate movement
 	public static final int HIGH_SPEED = 200; //this is the fast motor speed for less precious, faster movement (long distance travel)
 	public static final double WHEEL_RAD = 2.085; //the wheel radius of the wheels
-	public static final double TRACK = 14.2; //the wheel base of the robot
+	public static final double TRACK = 14.42; //the wheel base of the robot
 	public static final double TILE_SIZE = 30.48; //the tile length of the grid
 	public static final int APPROACH = 20; //distance moved when probing the ring 
 	public static final int DISTANCE = 45; //distance from the wall used by the ultrasonic sensor during the ultrasonic localization 
@@ -132,7 +135,7 @@ public class Project {
 	 * This is the main method for the lab, it will prompt the user to choose which functionality to execute
 	 * in a menu, and initiates the threads needed for the lab
 	 * @param args
-	 * @throws OdometerExceptions
+	 * @throws OdometerExceptions Odometer errors will be captured
 	 */
 	public static void main(String[] args) throws OdometerExceptions{
 		final Odometer odometer = Odometer.getOdometer(leftMotor, rightMotor, TRACK, WHEEL_RAD);

@@ -21,7 +21,7 @@ public class Navigation {
 	  private static final double TILE_SIZE = Project.TILE_SIZE;
 	  private static final double OFF_SET = Project.OFF_SET;
 	  
-	  private static final Port portLine = Project.portLeftLine;
+	  private static final Port portLeftLine = Project.portLeftLine;
 	  private static final SensorModes myLeftLine = Project.myLeftLine;
 	  private static final SampleProvider myLeftLineSample = Project.myLeftLineSample;
 	  private static final float[] sampleLeftLine = Project.sampleLeftLine;
@@ -30,21 +30,25 @@ public class Navigation {
 	  private static final SensorModes myRightLine = Project.myRightLine;
 	  private static final SampleProvider myRightLineSample = Project.myRightLineSample;
 	  private static final float[] sampleRightLine = Project.sampleRightLine;
+	  
+	private static final EV3LargeRegulatedMotor leftMotor = Project.leftMotor; //the motor for the left wheel
+	private static final EV3LargeRegulatedMotor rightMotor = Project.rightMotor; //the motor for the right wheel
 		
-	  private static final int THRESHOLD = Project.THRESHOLD;
-	
+		
 	/**
 	 * This method is used to drive the robot to the destination point which is
 	 * marked as an absolute coordinate (X, Y) 
+	 * <P>
 	 * The method constantly calls the turnTo method to first adjust to the angle
 	 * it needs to turn to before moving
+	 * <P>
+	 * It will stop before reaching the destination to leave enough space for an odometer correction
 	 * @param x the absolute x-coordinate of the destination, an integer value in double format
 	 * @param y the absolute y-coordinate of the destination, an integer value in double format
 	 * @param odometer the odometer object created in the main class
-	 * @param leftMotor the left motor of the robot 
-	 * @param rightmotor the right motor of the robot
+
 	 */	  	  
-	public static void travelTo(double x, double y, Odometer odometer, EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
+	public static void travelTo(double x, double y, Odometer odometer) {
 		
 		//get the odometer readings to determine the action
 		double currentX = odometer.getXYT()[0]; //get the current x position in cm
@@ -52,8 +56,8 @@ public class Navigation {
 		double currentT = odometer.getXYT()[2]; //get the current direction in degrees
 		
 		//calculate the moving distance and turning angle
-		double x1 = x*TILE_SIZE - 10; //waypoint x coordinate in cm
-		double y1 = y*TILE_SIZE - 10; //waypoint y coordinate in cm
+		double x1 = x*TILE_SIZE +15 ; //waypoint x coordinate in cm
+		double y1 = y*TILE_SIZE -15 ; //waypoint y coordinate in cm
 		double dDistance = Math.sqrt(Math.pow((x1 - currentX), 2) + Math.pow((y1 - currentY), 2));
 		
 		double dAngle = getDAngle(x1, y1, currentX, currentY);
@@ -69,7 +73,7 @@ public class Navigation {
 		} catch (InterruptedException e) {
 		}
 		
-		turnTo(dAngle, currentT, leftMotor, rightMotor); //turn the robot to the direction of the new way point
+		turnTo(dAngle, currentT); //turn the robot to the direction of the new way point
 		
 		//move the robot towards the new way point
 		//reset the motor
@@ -89,24 +93,10 @@ public class Navigation {
 	    leftMotor.rotate(convertDistance(WHEEL_RAD, dDistance), true);
 	    rightMotor.rotate(convertDistance(WHEEL_RAD, dDistance), false);
 	    
-	    boolean atPoint = false;
+	    double correctAngle = Math.toDegrees(Math.atan(-(y1-currentY)/(x1-currentX)));
 	    
-	    while (!atPoint) {
-	    	
-	    	if ((x1 - 10) < odometer.getXYT()[0] && (y1 - 10) < odometer.getXYT()[1]) {
-	    		
-	    		atPoint = true;
-	    		
-	    	}
-	    	
-	    }
-	    
-	    try {
-		      Thread.sleep(500);
-		} catch (InterruptedException e) {
-		}
-	    
-	    turnTo(-dAngle, currentT, leftMotor, rightMotor); //turn the robot to the direction of the new way point
+		leftMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, correctAngle), true);
+		rightMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, correctAngle), false);
 	    
 	    leftMotor.stop(true);
 		rightMotor.stop(false);
@@ -118,64 +108,73 @@ public class Navigation {
 	    } catch (InterruptedException e) {
 	    }
 	    
-	    leftMotor.forward();
-	    rightMotor.forward();
-  	    
-  	    boolean leftDetected = false;
-  	    boolean rightDetected = false;
-  	    
-  	    int localizationCount = 0;
-  	    
-  	    int leftTurn = 1;
-  	    int rightTurn = -1;
-  	    
-  	    while (localizationCount != 2) {
-  	    
-	  	    while (leftDetected && rightDetected) {
-	  	    	
-				leftMotor.forward();
-				rightMotor.forward();
-	  	    	
-	  	    	myLeftLine.fetchSample(sampleLeftLine, 0); //get the reading from the sensor
-			    float leftRead = sampleLeftLine[0]*1000;  //multiply the read by 1000 as suggested in the class slides
-				if (leftRead<THRESHOLD) {
-					leftDetected = true;
-					leftMotor.stop();
-				}
-				myLeftLine.fetchSample(sampleLeftLine, 0); //get the reading from the sensor
-			    float rightRead = sampleLeftLine[0]*1000;  //multiply the read by 1000 as suggested in the class slides
-				if (rightRead<THRESHOLD) {
-					rightDetected = true;
-					rightMotor.stop();
-				}
-	  	    	
-	  	    }
-	  	    
-	  	    //////////////////////////////5 is a hard coded value must be tested//////////////////////////////////////////////
-	  	    ///////////////////////////////////////////////////////////////////
-	  	    leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, 5),true);
-	  	  	rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, 5),false);
-	  	  	
-	  	  	leftMotor.stop(true);
-	  	    rightMotor.stop(false);
-	  	    
-	  	    leftMotor.rotate(leftTurn * Navigation.convertAngle(WHEEL_RAD, TRACK, 90),true);
-	  	    rightMotor.rotate(rightTurn * Navigation.convertAngle(WHEEL_RAD, TRACK, 90),false);
-	  	    
-	  	    leftMotor.stop(true);
-	  	    rightMotor.stop(false);
-	  	    
-	  	    localizationCount++;
-	  	    
-	  	    leftDetected = false;
-	  	    rightDetected = false;
-	  	    
-	  	    leftTurn = -1;
-	  	    rightTurn = 1;
-	  	    
-  	    }
+	    leftMotor.setSpeed(75);
+		rightMotor.setSpeed(75);
+		boolean left = false;
+		boolean right = false;
+		leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 90), true);
+		rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 90), false);
+		
+		while (left == false && right == false) {
+			leftMotor.forward();
+			rightMotor.forward();
+			if (Localizer.lineDetection() ==3) {
+				leftMotor.stop();
+				rightMotor.stop();
+				break;
+			}
+			else if (Localizer.lineDetection()==1) {
+				leftMotor.stop();
+				left = true;
+				//break;
+		
+			}
+			else if (Localizer.lineDetection()==2) {
+				rightMotor.stop();
+				right = true;
+				//break;
+			}
+		}
+		
 
-  	  odometer.setXYT(x*TILE_SIZE, y*TILE_SIZE, 0);
+		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), true);
+		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), false);
+		
+		leftMotor.stop();
+		rightMotor.stop();
+		
+		leftMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 90), true);
+		rightMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 90), false);
+		
+		left = false;
+		right = false;
+		
+		while (left == false && right == false) {
+			leftMotor.forward();
+			rightMotor.forward();
+			if (Localizer.lineDetection() ==3) {
+				leftMotor.stop();
+				rightMotor.stop();
+				break;
+			}
+			
+			else if (Localizer.lineDetection()==1) {
+				leftMotor.stop();
+				left = true;
+				//break;
+			}
+			else if (Localizer.lineDetection()==2) {
+				rightMotor.stop();
+				right = true;
+				//break;
+			}
+		}
+		
+
+		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), true);
+		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), false);
+		
+		odometer.setXYT(x*TILE_SIZE, y*TILE_SIZE, 0);
 		
 	}
 	
@@ -183,10 +182,8 @@ public class Navigation {
 	 * This method returns the angle the robot needs to turn (the smallest angle) to the next point
 	 * @param dAngle the angle to turn towards
 	 * @param currentT the current direction
-	 * @param leftMotor the left motor
-	 * @param rightMotor the right motor
 	 */
-	public static void turnTo (double dAngle, double currentT, EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor ) {
+	public static void turnTo (double dAngle, double currentT) {
 		//reset the motor
 		leftMotor.stop(true);
 		rightMotor.stop(false);
@@ -266,74 +263,13 @@ public class Navigation {
 	    
 	  }
 	
-//////////////////////////////Ethans hack travel to dont think will need it though//////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////
-	
-	public static void ethanTravelTo(int x, int y, EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
-
-  	    boolean leftDetected = false;
-  	    boolean rightDetected = false;
-  	    
-  	    int localizationCount = 0;
-  	    
-  	    int leftTurn = 1;
-  	    int rightTurn = -1;
-  	    
-  	    int toCross = y;
-  	    
-		//Sorry for the while loop-ception we can optimize later//
-		while (localizationCount != 2) {
-			
-			int linesCrossed = 0;
-
-	  	    while (linesCrossed < toCross) {
-			
-		  	    while (leftDetected && rightDetected) {
-		  	    	
-					leftMotor.forward();
-					rightMotor.forward();
-		  	    	
-		  	    	myLeftLine.fetchSample(sampleLeftLine, 0); //get the reading from the sensor
-				    float leftRead = sampleLeftLine[0]*1000;  //multiply the read by 1000 as suggested in the class slides
-					if (leftRead<THRESHOLD) {
-						leftDetected = true;
-						leftMotor.stop();
-					}
-					myLeftLine.fetchSample(sampleLeftLine, 0); //get the reading from the sensor
-				    float rightRead = sampleLeftLine[0]*1000;  //multiply the read by 1000 as suggested in the class slides
-					if (rightRead<THRESHOLD) {
-						rightDetected = true;
-						rightMotor.stop();
-					}
-		  	    	
-		  	    }
-		  	    
-		  	    linesCrossed++;
-	  	    
-		  	    leftDetected = false;
-		  	    rightDetected = false;
-	  	    
-	  	    }
-	  	    
-	  	    toCross = x;
-	  	    
-	  	    leftMotor.rotate(leftTurn * Navigation.convertAngle(WHEEL_RAD, TRACK, 90),true);
-	  	    rightMotor.rotate(rightTurn * Navigation.convertAngle(WHEEL_RAD, TRACK, 90),false);
-	  	    
-	  	    leftMotor.stop(true);
-	  	    rightMotor.stop(false);
-	  	    
-	  	    localizationCount++;
-	  	    
-	  	    leftTurn = -1;
-	  	    rightTurn = 1;
-	
-  	    }	
-		
-	}
-	
-	
-	public static void tunnelTravel(double x, double y, Odometer odometer, EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
+	/**
+	 * This methods is used for traveling through the tunnel 
+	 * @param x the absolute x-coordinate of the destination, an integer value in double format
+	 * @param y the absolute y-coordinate of the destination, an integer value in double format
+	 * @param odometer The odometer used by the robot
+	 */
+	public static void tunnelTravel(double x, double y, Odometer odometer) {
 		
 		double currentX = odometer.getXYT()[0]; //get the current x position in cm
 		double currentY = odometer.getXYT()[1]; //get the current y position in cm
@@ -342,8 +278,6 @@ public class Navigation {
 		leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 90),true);
   	    rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 90),false);	
 		
-//////////////////////////////5 is a hard coded value must be tested//////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////
   	    leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE/2 + OFF_SET),true);
   	  	rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE/2 + OFF_SET),false);
   	  	
@@ -360,16 +294,16 @@ public class Navigation {
   	    	
   	    	myLeftLine.fetchSample(sampleLeftLine, 0); //get the reading from the sensor
 		    float leftRead = sampleLeftLine[0]*1000;  //multiply the read by 1000 as suggested in the class slides
-			if (leftRead<THRESHOLD) {
-				leftDetected = true;
-				leftMotor.stop();
-			}
-			myLeftLine.fetchSample(sampleLeftLine, 0); //get the reading from the sensor
-		    float rightRead = sampleLeftLine[0]*1000;  //multiply the read by 1000 as suggested in the class slides
-			if (rightRead<THRESHOLD) {
-				rightDetected = true;
-				rightMotor.stop();
-			}
+//			if (leftRead<THRESHOLD) {
+//				leftDetected = true;
+//				leftMotor.stop();
+//			}
+//			myLeftLine.fetchSample(sampleLeftLine, 0); //get the reading from the sensor
+//		    float rightRead = sampleLeftLine[0]*1000;  //multiply the read by 1000 as suggested in the class slides
+//			if (rightRead<THRESHOLD) {
+//				rightDetected = true;
+//				rightMotor.stop();
+//			}
   	    	
   	    }
 	    
@@ -390,16 +324,16 @@ public class Navigation {
 	  	    	
 	  	    	myLeftLine.fetchSample(sampleLeftLine, 0); //get the reading from the sensor
 			    float leftRead = sampleLeftLine[0]*1000;  //multiply the read by 1000 as suggested in the class slides
-				if (leftRead<THRESHOLD) {
-					leftDetected = true;
-					leftMotor.stop();
-				}
-				myLeftLine.fetchSample(sampleLeftLine, 0); //get the reading from the sensor
-			    float rightRead = sampleLeftLine[0]*1000;  //multiply the read by 1000 as suggested in the class slides
-				if (rightRead<THRESHOLD) {
-					rightDetected = true;
-					rightMotor.stop();
-				}
+//				if (leftRead<THRESHOLD) {
+//					leftDetected = true;
+//					leftMotor.stop();
+//				}
+//				myLeftLine.fetchSample(sampleLeftLine, 0); //get the reading from the sensor
+//			    float rightRead = sampleLeftLine[0]*1000;  //multiply the read by 1000 as suggested in the class slides
+//				if (rightRead<THRESHOLD) {
+//					rightDetected = true;
+//					rightMotor.stop();
+//				}
 	  	    	
 	  	    }
 	  	    
@@ -426,6 +360,17 @@ public class Navigation {
 	    }
 	    
   	  odometer.setXYT(currentX + TILE_SIZE*1, currentY + TILE_SIZE*3, 0);
+		
+	}
+	
+	
+	public void intersectionCorrection(Odometer odometer) {
+		
+		
+	}
+	
+	public void lineCorrection(Odometer odometer) {
+		
 		
 	}
  

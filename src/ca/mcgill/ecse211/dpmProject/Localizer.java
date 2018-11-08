@@ -54,13 +54,11 @@ public class Localizer {
 	
 	/**
 	 * This is the falling edge method used when the robots starts facing away from the wall (distance larger than D) 
+	 * <P>
 	 * It will first turn clockwise to detect the back wall (angle: alpha)
-	 * then counter-clockwise to detect the left wall (angle: beta)
-	 * @param usDistance the sensor data sampler
-	 * @param usData the sensor data buffer
+	 * <P>
+	 * Then counter-clockwise to detect the left wall (angle: beta)
 	 * @param odometer the odometer used to determine the robots orientation
-	 * @param leftMotor the left motor of the robot
-	 * @param rightMotor the right motor of the robot
 	 */
 	static void fallingEdge(Odometer odometer) {
 		int distance;
@@ -74,15 +72,8 @@ public class Localizer {
 		    
 		    //turn clockwise to find the back wall and the corresponding angle alpha
 	        //reset the motor
-		  	for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] {leftMotor, rightMotor}) {
-		  	      motor.stop();
-			      motor.setAcceleration(3000);
-	  		    }
-	  		// Sleep for 1 second
-	  	    try {
-		  	      Thread.sleep(500);
-		    } catch (InterruptedException e) {      // There is nothing to be done here
-		  	}    
+      	    leftMotor.stop();
+      	    rightMotor.stop();
 	  	    leftMotor.setSpeed(HIGH_SPEED); 
 	  	    rightMotor.setSpeed(HIGH_SPEED);
 	  	    
@@ -105,16 +96,8 @@ public class Localizer {
 	  	    rightMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 45), false);
 	  	    
 	  	    //turn counter-clockwise to find the left wall and the corresponding angle beta
-	  	    //reset the motor
-		  	for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] {leftMotor, rightMotor}) {
-		  	      motor.stop();
-			      motor.setAcceleration(3000);
-	  		    }
-	  		// Sleep for 1 second
-	  	    try {
-		  	      Thread.sleep(500);
-		    } catch (InterruptedException e) {     
-		  	}  
+      	    leftMotor.stop();
+      	    rightMotor.stop();
 	  	    leftMotor.setSpeed(HIGH_SPEED); 
 	  	    rightMotor.setSpeed(HIGH_SPEED);
 	  	    
@@ -137,22 +120,14 @@ public class Localizer {
 	  	    leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 45), true);
 	  	    rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 45), false);
 	  	    
-	  	    //reset the motor
-		  	for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] {leftMotor, rightMotor}) {
-		  	      motor.stop();
-			      motor.setAcceleration(3000);
-	  		    }
-	  		// Sleep for 1 second
-	  	    try {
-		  	      Thread.sleep(500);
-		    } catch (InterruptedException e) {      
-		  	}	  	    
+      	    leftMotor.stop();
+      	    rightMotor.stop();	  	    
 	  	    leftMotor.setSpeed(HIGH_SPEED); 
 	  	    rightMotor.setSpeed(HIGH_SPEED);
 	  	    
 	  	    //calculate the change in angle and then turn to the adjusted orientation
 	  	    //delta is the angle of the real 0 axis when we use initial orientation as 0 axis 
-	  	    double delta = (alpha+beta)/2 -219; 
+	  	    double delta = (alpha+beta)/2 -225; 
 	  	    if (delta<0) delta = 360+delta;
 	  	    //turn to the real zero axis
 	  	    leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, (delta-odometer.getXYT()[2])), true);
@@ -173,13 +148,11 @@ public class Localizer {
 
 	/**
 	 * This is the rising edge method used when the robots starts facing the wall (distance smaller than D); 
+	 * <P>
 	 * It will first turn clockwise to detect the left wall (angle: beta)
-	 * then counter-clockwise to detect the back wall (angle: alpha)
-	 * @param usDistance the sensor data sampler
-	 * @param usData the sensor data buffer
+	 * <P>
+	 * Then counter-clockwise to detect the back wall (angle: alpha)
 	 * @param odometer the odometer used to determine the robots orientation
-	 * @param leftMotor the left motor of the robot
-	 * @param rightMotor the right motor of the robot
 	 */	
 	static void risingEdge(Odometer odometer) {
 	    int distance;    
@@ -192,16 +165,8 @@ public class Localizer {
     	    double beta =0; //the angle when the left wall is detected
     	    
     	    //turn clockwise to find the left wall and the corresponding angle beta
-            //reset the motor
-    	  	for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] {leftMotor, rightMotor}) {
-    	  	      motor.stop();
-    		      motor.setAcceleration(3000);
-      		    }
-      		// Sleep for 1 second
-      	    try {
-    	  	      Thread.sleep(500);
-    	    } catch (InterruptedException e) {      // There is nothing to be done here
-    	  	}
+      	    leftMotor.stop();
+      	    rightMotor.stop();
     	    leftMotor.setSpeed(HIGH_SPEED); 
       	    rightMotor.setSpeed(HIGH_SPEED);
       	    
@@ -226,16 +191,8 @@ public class Localizer {
       	    rightMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 45), false);
       	    
       	    //turn counter-clockwise to find the back wall and the corresponding angle alpha
-      	    //reset the motor
-    	  	for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] {leftMotor, rightMotor}) {
-    	  	      motor.stop();
-    		      motor.setAcceleration(3000);
-      		    }
-      		// Sleep for 1 second
-      	    try {
-    	  	      Thread.sleep(500);
-    	    } catch (InterruptedException e) {      
-    	  	}	    
+      	    leftMotor.stop();
+      	    rightMotor.stop();   
       	    leftMotor.setSpeed(HIGH_SPEED); 
       	    rightMotor.setSpeed(HIGH_SPEED);
     	    
@@ -259,16 +216,8 @@ public class Localizer {
       	    leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 45), true);
       	    rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 45), false);
       	    
-      	    //reset the motor
-    	  	for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] {leftMotor, rightMotor}) {
-    	  	      motor.stop();
-    		      motor.setAcceleration(3000);
-      		    }
-      		// Sleep for 1 second
-      	    try {
-    	  	      Thread.sleep(500);
-    	    } catch (InterruptedException e) {      
-    	  	}	    	    
+      	    leftMotor.stop();
+      	    rightMotor.stop();  	    
       	    leftMotor.setSpeed(HIGH_SPEED); 
       	    rightMotor.setSpeed(HIGH_SPEED);
       	    
@@ -291,115 +240,122 @@ public class Localizer {
 
 	}
 	
-	
-	public static void ultrasonicLite() {
-		int distance;
-		usDistance.fetchSample(usData, 0);
-		distance = (int) (usData[0] * 100.0); 
-		
-		//rotate counter clockwise until no wall is found (can be optimized with a check to see whether the turn should be clockwise
-		//or counter clockwise depending on initial distacne 
-		while (distance < 255) {
-			
-			for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] {leftMotor, rightMotor}) {
-		  	      motor.stop();
-			      motor.setAcceleration(3000);
-	  		    }
-			
-			leftMotor.setSpeed(MEDIUM_SPEED); 
-	  	    rightMotor.setSpeed(MEDIUM_SPEED);
-	  	    
-	  	    leftMotor.backward();
-		    rightMotor.forward();
-			
-		    usDistance.fetchSample(usData, 0);
-  		    distance = (int) (usData[0] * 100.0); 		    
-		    
+	 /**
+	  * The lineDetection() method is used to determine whether the left or right line detection sensor have picked up the line readings.
+	  * <P>
+	  * The detection situation is represented as integer values, for easier implementation of the method's returned result.
+	  * <P>
+	  * If only the left sensor have detected a line, the situation is labeled as 1.
+	  * <P>
+	  * If only the right sensor have detected a line, the situation is labeled as 1.
+	  * <P>
+	  * If both sensors have detected a line, the situation is labeled as 3.
+	  * @return the current situation regarding line detection, represented as integers 
+	  */
+	public static int lineDetection() {
+		//add a  differential filter
+		int[] readingsLeft = new int[4];
+		int[] readingsRight = new int[4];
+		int[] filterCoeff = {1,1,-1,-1};
+		int differentialLeft = 0;
+		int differentialRight = 0;
+		for(int i = 0; i<4; i++) {
+			myLeftLineSample.fetchSample(sampleLeftLine, 0);
+			readingsLeft[i] = (int)(sampleLeftLine[0]*1000.0);
+			myRightLineSample.fetchSample(sampleRightLine, 0);
+			readingsRight[i] = (int)(sampleRightLine[0]*1000.0);
+			System.out.println();
+			System.out.println();
+			differentialLeft += readingsLeft[i]*filterCoeff[i];
+			differentialRight += readingsRight[i]*filterCoeff[i];
 		}
+		if(differentialLeft >= 50 && differentialRight >= 50) return 3;
+		else if(differentialLeft >= 50) return 1;
+		else if(differentialRight >= 50) return 2;
 		
-		//once no wall is found continue to turn counter clockwise until the wall is found
-		//this garentees that we are facing the back left wall
-		while (distance > DISTANCE) {
-			
-			for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] {leftMotor, rightMotor}) {
-		  	      motor.stop();
-			      motor.setAcceleration(3000);
-	  		    }
-			
-			leftMotor.setSpeed(MEDIUM_SPEED); 
-	  	    rightMotor.setSpeed(MEDIUM_SPEED);
-	  	    
-	  	    leftMotor.backward();
-		    rightMotor.forward();
-			
-		    usDistance.fetchSample(usData, 0);
-  		    distance = (int) (usData[0] * 100.0); 		    
-		    
-		}
-		
-		//hard coded value "50" to be determined by test
-		leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 50), true);
-  	    rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 50), false);
+		return 0;
 	}
 	
+	
+	/**
+	 * The lightLocalizerLite() method is simplified version of light localization.
+	 * <P>
+	 * It utilizes the two light sensors installed in the front of the robot, and performs direction and position adjustment on the grid lines.
+	 * <P>
+	 * Notice the light localization should be performed only after the ultrasonic localization orients the robot to close to the 0-axis.
+	 * @param odometer the odometer used by the robot
+	 */
 	public static void lightLocalizeLite(Odometer odometer) {
-		leftMotor.forward();
-		rightMotor.forward();
-
-		boolean leftDetected = false;
-		boolean rightDetected = false;
-
-		int localizationCount = 0;
-
-		int leftTurn = 1;
-		int rightTurn = -1;
-
-		while (localizationCount != 2) {
-
-			while (leftDetected && rightDetected) {
-
-				leftMotor.forward();
-				rightMotor.forward();
-
-				myLeftLine.fetchSample(sampleLeftLine, 0); // get the reading from the sensor
-				float leftRead = sampleLeftLine[0] * 1000; // multiply the read by 1000 as suggested in the class slides
-				if (leftRead < THRESHOLD) {
-					leftDetected = true;
-					leftMotor.stop();
-				}
-				myLeftLine.fetchSample(sampleLeftLine, 0); // get the reading from the sensor
-				float rightRead = sampleLeftLine[0] * 1000; // multiply the read by 1000 as suggested in the class
-															// slides
-				if (rightRead < THRESHOLD) {
-					rightDetected = true;
-					rightMotor.stop();
-				}
-
+		leftMotor.setSpeed(75);
+		rightMotor.setSpeed(75);
+		boolean left = false;
+		boolean right = false;
+		leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 90), true);
+		rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 90), false);
+		
+		while (left == false && right == false) {
+			leftMotor.forward();
+			rightMotor.forward();
+			if (lineDetection() ==3) {
+				leftMotor.stop();
+				rightMotor.stop();
+				break;
 			}
-
-			leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), true);
-			rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), false);
-
-			leftMotor.stop(true);
-			rightMotor.stop(false);
-
-			leftMotor.rotate(leftTurn * Navigation.convertAngle(WHEEL_RAD, TRACK, 90), true);
-			rightMotor.rotate(rightTurn * Navigation.convertAngle(WHEEL_RAD, TRACK, 90), false);
-
-			leftMotor.stop(true);
-			rightMotor.stop(false);
-
-			localizationCount++;
-
-			leftDetected = false;
-			rightDetected = false;
-
-			leftTurn = -1;
-			rightTurn = 1;
-
-			odometer.setXYT(TILE_SIZE, TILE_SIZE, 0);
-
+			else if (lineDetection()==1) {
+				leftMotor.stop();
+				left = true;
+				//break;
+		
+			}
+			else if (lineDetection()==2) {
+				rightMotor.stop();
+				right = true;
+				
+			}
 		}
+		
+
+		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), true);
+		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), false);
+		
+		leftMotor.stop();
+		rightMotor.stop();
+		
+		leftMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 90), true);
+		rightMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 90), false);
+		
+		left = false;
+		right = false;
+		
+		while (left == false && right == false) {
+			leftMotor.forward();
+			rightMotor.forward();
+			if (lineDetection() ==3) {
+				leftMotor.stop();
+				rightMotor.stop();
+				break;
+			}
+			
+			else if (lineDetection()==1) {
+				leftMotor.stop();
+				left = true;
+				
+			}
+			else if (lineDetection()==2) {
+				rightMotor.stop();
+				right = true;
+			}
+		}
+		
+
+		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), true);
+		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), false);
+		
+		if(Project.Cornor == 0) odometer.setXYT(TILE_SIZE, TILE_SIZE, 0);
+		if(Project.Cornor == 1) odometer.setXYT(7*TILE_SIZE, TILE_SIZE, 270);
+		if(Project.Cornor == 2) odometer.setXYT(7*TILE_SIZE, 7*TILE_SIZE, 180);
+		if(Project.Cornor == 3) odometer.setXYT(TILE_SIZE, 7*TILE_SIZE, 90);
+		
 	}
 	
 }
