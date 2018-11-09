@@ -62,7 +62,6 @@ public class Grabber {
 	 */
 	public static void resetArm(EV3LargeRegulatedMotor armMotor) {
 		armMotor.setSpeed(ARM_SPEED);
-		//shit how to do this....
 	}
 	
 

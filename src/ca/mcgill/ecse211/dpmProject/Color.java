@@ -12,6 +12,7 @@ import lejos.hardware.Sound;
 
 /**
  * This class contains methods need for color identification 
+ * <P>
  * This method is achieved by ranking the RGB space Euclidean distance
  * to find the most likely color of the ring
  * @author Team 12

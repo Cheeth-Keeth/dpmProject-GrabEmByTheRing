@@ -363,12 +363,19 @@ public class Navigation {
 		
 	}
 	
-	
+	/**
+	 * This methods is used for determining what direction to turn
+	 * when localizing to a point 
+	 */
 	public void intersectionCorrection(Odometer odometer) {
 		
 		
 	}
 	
+	/**
+	 * This methods is used for determining what direction to turn
+	 * when localizing to a line 
+	 */
 	public void lineCorrection(Odometer odometer) {
 		
 		

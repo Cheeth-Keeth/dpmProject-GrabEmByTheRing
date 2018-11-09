@@ -1,0 +1,52 @@
+<XML>
+	<inputs>
+		<team key="RedTeam">
+			<label>Red team number</label>
+		</team>
+		<team key="GreenTeam">
+			<label>Green team number</label>
+		</team>
+        <int key="RedCorner">
+            <label>Red team's starting corner</label>
+        </int>
+		<int key="GreenCorner">
+			<label>Green team's starting corner</label>
+		</int>
+        <coordinate keyx="Red_LL_x" keyy="Red_LL_y">
+            <label>Lower left hand corner of Red Zone</label>
+        </coordinate>
+        <coordinate keyx="Red_UR_x" keyy="Red_UR_y">
+            <label>Upper right hand corner of Red Zone</label>
+        </coordinate>
+        <coordinate keyx="Green_LL_x" keyy="Green_LL_y">
+            <label>Lower left hand corner of Green Zone</label>
+        </coordinate>
+        <coordinate keyx="Green_UR_x" keyy="Green_UR_y">
+            <label>Upper right hand corner of Green Zone</label>
+        </coordinate>
+        <coordinate keyx="Island_LL_x" keyy="Island_LL_y">
+            <label>Lower left hand corner of the Island</label>
+        </coordinate>
+        <coordinate keyx="Island_UR_x" keyy="Island_UR_y">
+            <label>Upper right hand corner of the Island</label>
+        </coordinate>
+        <coordinate keyx="TNR_LL_x" keyy="TNR_LL_y">
+            <label>Lower left hand corner of the red tunnel</label>
+        </coordinate>
+        <coordinate keyx="TNR_UR_x" keyy="TNR_UR_y">
+            <label>Upper right hand corner of the red tunnel</label>
+        </coordinate>
+        <coordinate keyx="TNG_LL_x" keyy="TNG_LL_y">
+            <label>Lower left hand corner of the green tunnel</label>
+        </coordinate>
+        <coordinate keyx="TNG_UR_x" keyy="TNG_UR_y">
+            <label>Upper right hand corner of the green tunnel</label>
+        </coordinate>
+        <coordinate keyx="TR_x" keyy="TR_y">
+            <label>Location of the red ring set</label>
+        </coordinate>
+        <coordinate keyx="TG_x" keyy="TG_y">
+            <label>Location of the green ring set</label>
+        </coordinate>
+	</inputs>
+</XML>
