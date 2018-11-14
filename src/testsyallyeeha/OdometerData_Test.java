@@ -1,4 +1,4 @@
-package ca.mcgill.ecse211.dpmProject;
+package testsyallyeeha;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -9,7 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Team 12
  */
 
-public class OdometerData {
+public class OdometerData_Test {
 
   // Position parameters
   private volatile double x; // x-axis position
@@ -34,13 +34,13 @@ public class OdometerData {
                                                         // operation is
                                                         // over.
 
-  private static OdometerData odoData = null;
+  private static OdometerData_Test odoData = null;
 
   /**
    * Default constructor. The constructor is private. A factory is used instead such that only one
    * instance of this class is ever created.
    */
-  protected OdometerData() {
+  protected OdometerData_Test() {
     this.x = 0;
     this.y = 0;
     this.theta = 0;
@@ -52,18 +52,18 @@ public class OdometerData {
    * MultipleOdometerDataException.
    * 
    * @return An OdometerData object
-   * @throws OdometerExceptions
+   * @throws OdometerExceptions_Test
    */
-  public synchronized static OdometerData getOdometerData() throws OdometerExceptions {
+  public synchronized static OdometerData_Test getOdometerData() throws OdometerExceptions_Test {
     if (odoData != null) { // Return existing object
       return odoData;
     } else if (numberOfIntances < MAX_INSTANCES) { // create object and
                                                    // return it
-      odoData = new OdometerData();
+      odoData = new OdometerData_Test();
       numberOfIntances += 1;
       return odoData;
     } else {
-      throw new OdometerExceptions("Only one intance of the Odometer can be created.");
+      throw new OdometerExceptions_Test("Only one intance of the Odometer can be created.");
     }
 
   }

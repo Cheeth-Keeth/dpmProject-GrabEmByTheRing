@@ -1,11 +1,11 @@
-package ca.mcgill.ecse211.dpmProject;
+package testsyallyeeha;
 
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
-public class Odometer extends OdometerData implements Runnable {
+public class Odometer_Test extends OdometerData_Test implements Runnable {
 
-  private OdometerData odoData;
-  private static Odometer odo = null; // Returned as singleton
+  private OdometerData_Test odoData;
+  private static Odometer_Test odo = null; // Returned as singleton
 
   // Motors and related variables
   private int leftMotorTachoCount;
@@ -29,11 +29,11 @@ public class Odometer extends OdometerData implements Runnable {
    * 
    * @param leftMotor
    * @param rightMotor
-   * @throws OdometerExceptions
+   * @throws OdometerExceptions_Test
    */
-  private Odometer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
-      final double TRACK, final double WHEEL_RAD) throws OdometerExceptions {
-    odoData = OdometerData.getOdometerData(); // Allows access to x,y,z
+  private Odometer_Test(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
+      final double TRACK, final double WHEEL_RAD) throws OdometerExceptions_Test {
+    odoData = OdometerData_Test.getOdometerData(); // Allows access to x,y,z
                                               // manipulation methods
     this.leftMotor = leftMotor;
     this.rightMotor = rightMotor;
@@ -55,15 +55,15 @@ public class Odometer extends OdometerData implements Runnable {
    * @param leftMotor
    * @param rightMotor
    * @return new or existing Odometer Object
-   * @throws OdometerExceptions
+   * @throws OdometerExceptions_Test
    */
-  public synchronized static Odometer getOdometer(EV3LargeRegulatedMotor leftMotor,
+  public synchronized static Odometer_Test getOdometer(EV3LargeRegulatedMotor leftMotor,
       EV3LargeRegulatedMotor rightMotor, final double TRACK, final double WHEEL_RAD)
-      throws OdometerExceptions {
+      throws OdometerExceptions_Test {
     if (odo != null) { // Return existing object
       return odo;
     } else { // create object and return it
-      odo = new Odometer(leftMotor, rightMotor, TRACK, WHEEL_RAD);
+      odo = new Odometer_Test(leftMotor, rightMotor, TRACK, WHEEL_RAD);
       return odo;
     }
   }
@@ -74,10 +74,10 @@ public class Odometer extends OdometerData implements Runnable {
    * 
    * @return error if no previous odometer exists
    */
-  public synchronized static Odometer getOdometer() throws OdometerExceptions {
+  public synchronized static Odometer_Test getOdometer() throws OdometerExceptions_Test {
 
     if (odo == null) {
-      throw new OdometerExceptions("No previous Odometer exits.");
+      throw new OdometerExceptions_Test("No previous Odometer exits.");
 
     }
     return odo;
