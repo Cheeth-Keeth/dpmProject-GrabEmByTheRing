@@ -1,4 +1,4 @@
-package testsyallyeeha;
+package ca.mcgill.ecse211.dpmProject;
 
 import java.awt.List;
 import java.util.ArrayList;

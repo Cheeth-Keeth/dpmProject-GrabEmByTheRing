@@ -1,6 +1,6 @@
-package testsyallyeeha;
+package ca.mcgill.ecse211.dpmProject;
 
-import testsyallyeeha.Odometer;
+import ca.mcgill.ecse211.dpmProject.Odometer;
 import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;

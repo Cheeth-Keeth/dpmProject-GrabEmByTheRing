@@ -1,4 +1,4 @@
-package testsyallyeeha;
+package ca.mcgill.ecse211.dpmProject;
 
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.port.Port;

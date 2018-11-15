@@ -1,13 +1,13 @@
-package testsyallyeeha;
+package ca.mcgill.ecse211.dpmProject;
 
 import lejos.hardware.sensor.*;
-import testsyallyeeha.Odometer;
-import testsyallyeeha.OdometerExceptions;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import ca.mcgill.ecse211.WiFiClient.WiFi;
+import ca.mcgill.ecse211.dpmProject.Odometer;
+import ca.mcgill.ecse211.dpmProject.OdometerExceptions;
 import lejos.hardware.Button;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;

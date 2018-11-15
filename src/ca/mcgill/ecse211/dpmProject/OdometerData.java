@@ -1,4 +1,4 @@
-package testsyallyeeha;
+package ca.mcgill.ecse211.dpmProject;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;

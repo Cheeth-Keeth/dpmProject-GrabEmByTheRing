@@ -1,4 +1,4 @@
-package testsyallyeeha;
+package ca.mcgill.ecse211.dpmProject;
 
 /**
  * This class is used to handle errors regarding the singleton pattern used for the odometer and odometerData
