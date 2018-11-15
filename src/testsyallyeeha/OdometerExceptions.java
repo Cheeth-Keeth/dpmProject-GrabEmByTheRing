@@ -5,9 +5,9 @@ package testsyallyeeha;
  * @author Team 12
  */
 @SuppressWarnings("serial")
-public class OdometerExceptions_Test extends Exception {
+public class OdometerExceptions extends Exception {
 
-  public OdometerExceptions_Test(String Error) {
+  public OdometerExceptions(String Error) {
     super(Error);
   }
 

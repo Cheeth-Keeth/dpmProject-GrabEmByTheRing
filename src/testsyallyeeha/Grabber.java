@@ -14,41 +14,47 @@ import lejos.hardware.motor.EV3MediumRegulatedMotor;
  * @author Team12
  *
  */
-public class Grabber_Test {
-	private static final EV3LargeRegulatedMotor leftMotor = Project_Test.leftMotor; // the motor for the left wheel
-	private static final EV3LargeRegulatedMotor rightMotor = Project_Test.rightMotor; // the motor for the right wheel
-	private static final EV3LargeRegulatedMotor armMotor = Project_Test.armMotor; // the motor for raising/lowering the
+public class Grabber {
+	private static final EV3LargeRegulatedMotor leftMotor = Project.leftMotor; // the motor for the left wheel
+	private static final EV3LargeRegulatedMotor rightMotor = Project.rightMotor; // the motor for the right wheel
+	private static final EV3LargeRegulatedMotor armMotor = Project.armMotor; // the motor for raising/lowering the
 																					// arm
-	private static final EV3MediumRegulatedMotor hookMotor = Project_Test.hookMotor; // the motor for motorizing the
+	private static final EV3MediumRegulatedMotor hookMotor = Project.hookMotor; // the motor for motorizing the
 																						// hooks
-	private static final int ARM_SPEED = Project_Test.ARM_SPEED; // this is the speed for the arm for the arm motor
-	private static final int HOOK_SPEED = Project_Test.HOOK_SPEED; // this is the angle which the hook will open/close
-	private static final int HOOK_ANGLE = Project_Test.HOOK_ANGLE; // this is the angle which the hook will open/close
-	private static final int LOW_ANGLE = Project_Test.LOW_ANGLE; // the angle the arm motor needs to turn to reach
+	private static final int ARM_SPEED = Project.ARM_SPEED; // this is the speed for the arm for the arm motor
+	private static final int HOOK_SPEED = Project.HOOK_SPEED; // this is the angle which the hook will open/close
+	private static final int HOOK_ANGLE = Project.HOOK_ANGLE; // this is the angle which the hook will open/close
+	private static final int LOW_ANGLE = Project.LOW_ANGLE; // the angle the arm motor needs to turn to reach
 																	// lowly-hanged rings, with respect to the initial
 																	// position
-	private static final int HIGH_ANGLE = Project_Test.HIGH_ANGLE; // the angle the arm motor needs to turn to reach
+	private static final int HIGH_ANGLE = Project.HIGH_ANGLE; // the angle the arm motor needs to turn to reach
 																	// highly-hanged rings, with respect to the initial
 																	// position
-	private static final int UNLOAD_ANGLE = Project_Test.UNLOAD_ANGLE; // the angle the arm motor needs to turn to
+	private static final int UNLOAD_ANGLE = Project.UNLOAD_ANGLE; // the angle the arm motor needs to turn to
 																		// unload the ring(s), with respect to the
 																		// initial position
 
-	private static final int FORWARD_SPEED = Project_Test.HIGH_SPEED;
-	private static final int ROTATE_SPEED = Project_Test.MEDIUM_SPEED;
-	private static final double WHEEL_RAD = Project_Test.WHEEL_RAD;
-	private static final double TRACK = Project_Test.TRACK;
-	private static final double TILE_SIZE = Project_Test.TILE_SIZE;
-	private static final double OFF_SET = Project_Test.OFF_SET;
-	private static final double HIGH_PROBE = Project_Test.HIGH_PROBE;
-	private static final double LOW_PROBE = Project_Test.LOW_PROBE;
+	private static final int FORWARD_SPEED = Project.HIGH_SPEED;
+	private static final int ROTATE_SPEED = Project.MEDIUM_SPEED;
+	private static final double WHEEL_RAD = Project.WHEEL_RAD;
+	private static final double TRACK = Project.TRACK;
+	private static final double TILE_SIZE = Project.TILE_SIZE;
+	private static final double OFF_SET = Project.OFF_SET;
+	private static final double HIGH_PROBE = Project.HIGH_PROBE;
+	private static final double LOW_PROBE = Project.LOW_PROBE;
 	
-	private static final double T_x = Project_Test.T_x;
-	private static final double T_y = Project_Test.T_y;
+	private static final double T_x = Project.T_x;
+	private static final double T_y = Project.T_y;
 	
-	public static boolean FOUND = Color_Test.FOUND;
+	public static boolean FOUND = Color.FOUND;
 	
-	public static void travelToTree(Odometer_Test odometer) {
+	/**
+	 * This method is used to travel to the tree after coming out of the tunnel
+	 * <p>
+	 * It will always go the nearest closest side of the three, as each side is defined by first intersection the branches on that side are facing
+	 * @param odometer the odometer used by the robot
+	 */
+	public static void travelToTree(Odometer odometer) {
 		
 		double[] odometerData = odometer.getXYT();
 		double x = odometerData[0];
@@ -71,23 +77,23 @@ public class Grabber_Test {
 
 		int color;
 	
-		point = Navigation_Test.closestPoint(X0, Y0, X1, Y1, X2, Y2, X3, Y3, x, y);
+		point = Navigation.closestPoint(X0, Y0, X1, Y1, X2, Y2, X3, Y3, x, y);
 		
 		if (point == 0) {
 			
-			Navigation_Test.travelTo(X0, Y0, odometer);
+			Navigation.travelTo(X0, Y0, odometer);
 
 		} else if (point == 1) {
 
-			Navigation_Test.travelTo(X1, Y1, odometer);
+			Navigation.travelTo(X1, Y1, odometer);
 
 		} else if (point == 2) {
 
-			Navigation_Test.travelTo(X2, Y2, odometer);
+			Navigation.travelTo(X2, Y2, odometer);
 
 		} else if (point == 3) {
 
-			Navigation_Test.travelTo(X3, Y3, odometer);
+			Navigation.travelTo(X3, Y3, odometer);
 
 		}
 		
@@ -100,7 +106,12 @@ public class Grabber_Test {
 		}
 	}
 	
-	public static void probe(Odometer_Test odometer, int point) {
+	/**
+	 * This method is used for probing the rings once the robot arrives at a side of the tree
+	 * @param odometer the odometer used by the robot
+	 * @param point the intersection corresponding to the side the robot is probing
+	 */
+	public static void probe(Odometer odometer, int point) {
 		
 			double[] odometerData = odometer.getXYT();
 			double x = odometerData[0];
@@ -120,21 +131,21 @@ public class Grabber_Test {
 			if (point == 1) treeOrientation = 270;
 			if (point == 2) treeOrientation = 180;
 			if (point == 3) treeOrientation = 90;
-			double angle = Navigation_Test.smallAngle(t, treeOrientation);
+			double angle = Navigation.smallAngle(t, treeOrientation);
 
-			leftMotor.rotate(Navigation_Test.convertAngle(WHEEL_RAD, TRACK, angle), true);
-			rightMotor.rotate(-Navigation_Test.convertAngle(WHEEL_RAD, TRACK, angle), false);
+			leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, angle), true);
+			rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, angle), false);
 			
-			leftMotor.rotate(-Navigation_Test.convertDistance(WHEEL_RAD, 5), true);
-			rightMotor.rotate(-Navigation_Test.convertDistance(WHEEL_RAD, 5), false);
+			leftMotor.rotate(-Navigation.convertDistance(WHEEL_RAD, 5), true);
+			rightMotor.rotate(-Navigation.convertDistance(WHEEL_RAD, 5), false);
 			
-			Navigation_Test.lineCorrection(odometer);
+			Navigation.lineCorrection(odometer);
 			
-			color = Grabber_Test.highLevel();
-			Navigation_Test.lineCorrection(odometer);
+			color = Grabber.highLevel();
+			Navigation.lineCorrection(odometer);
 			if (color == 0) {
-				color = Grabber_Test.lowLevel();
-				Navigation_Test.lineCorrection(odometer);
+				color = Grabber.lowLevel();
+				Navigation.lineCorrection(odometer);
 			}
 
 		}
@@ -151,13 +162,13 @@ public class Grabber_Test {
 		//move forward.////////////////////
 		leftMotor.setSpeed(100);
 		rightMotor.setSpeed(100);
-		leftMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, LOW_PROBE), true);
-		rightMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, LOW_PROBE), false);
+		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, LOW_PROBE), true);
+		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, LOW_PROBE), false);
 	//	Navigation_Test.lineCorrection();
 		leftMotor.stop(true);
 		rightMotor.stop(false);
 		///////////////////////////////////
-		int color = Color_Test.color();
+		int color = Color.color();
 
 		if (color == 1 || color == 2 || color == 3 || color == 4) { 	// high level fetching
 			if (color == 1) {
@@ -184,8 +195,8 @@ public class Grabber_Test {
 		//move backward /////////////////////////
 		leftMotor.setSpeed(150);
 		rightMotor.setSpeed(150);
-		leftMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, -LOW_PROBE - 5), true);
-		rightMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, -LOW_PROBE - 5), false);
+		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, -LOW_PROBE - 5), true);
+		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, -LOW_PROBE - 5), false);
 		leftMotor.stop(true);
 		rightMotor.stop(false);
 		///////////////////////////////////////
@@ -206,12 +217,12 @@ public class Grabber_Test {
 		//move forward.////////////////////
 		leftMotor.setSpeed(100);
 		rightMotor.setSpeed(100);
-		leftMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, HIGH_PROBE), true);
-		rightMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, HIGH_PROBE), false);
+		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, HIGH_PROBE), true);
+		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, HIGH_PROBE), false);
 		leftMotor.stop(true);
 		rightMotor.stop(false);
 		///////////////////////////////////
-		int color = Color_Test.color();
+		int color = Color.color();
 
 		if (color == 1 || color == 2 || color == 3 || color == 4) { 	// high level fetching
 			if (color == 1) {
@@ -241,8 +252,8 @@ public class Grabber_Test {
 		//move backward /////////////////////////
 		leftMotor.setSpeed(150);
 		rightMotor.setSpeed(150);
-		leftMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, -HIGH_PROBE -5), true);
-		rightMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, -HIGH_PROBE -5), false);
+		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, -HIGH_PROBE -5), true);
+		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, -HIGH_PROBE -5), false);
 		leftMotor.stop(true);
 		rightMotor.stop(false);
 		/////////////////////////////////////////
@@ -257,8 +268,8 @@ public class Grabber_Test {
 	 */
 	public static void openHook() {
 		hookMotor.rotate(HOOK_ANGLE);
-		leftMotor.rotate(-Navigation_Test.convertDistance(WHEEL_RAD, 15), true);
-		rightMotor.rotate(-Navigation_Test.convertDistance(WHEEL_RAD, 15), false);
+		leftMotor.rotate(-Navigation.convertDistance(WHEEL_RAD, 15), true);
+		rightMotor.rotate(-Navigation.convertDistance(WHEEL_RAD, 15), false);
 		
 		while(true) {
 			
@@ -296,14 +307,21 @@ public class Grabber_Test {
 		armMotor.resetTachoCount();
 	}
 	
-	public static void findRoute(int point, Odometer_Test odometer) {
+	/**
+	 * This method defines and determines the further probing route, after probing at the closed side of the tree from the tunnel
+	 * <p>
+	 * The route needs to be determined for specific maps as the avaliability of the sides (branches) varies based on the position of the tree
+	 * @param point the intersection the robot is currenting on, corresponding to the side of the tree it is at
+	 * @param odometer the odometer used by the robot 
+	 */
+	public static void findRoute(int point, Odometer odometer) {
 
-		double T_x = Project_Test.T_x; //x coordinate of the ring tree
-		double T_y = Project_Test.T_y; //y coordinate of the ring tree
-		double Island_LL_y = Project_Test.Island_LL_y;
-		double Island_LL_x = Project_Test.Island_LL_x;
-		double Island_UR_y = Project_Test.Island_UR_y;
-		double Island_UR_x = Project_Test.Island_UR_x;
+		double T_x = Project.T_x; //x coordinate of the ring tree
+		double T_y = Project.T_y; //y coordinate of the ring tree
+		double Island_LL_y = Project.Island_LL_y;
+		double Island_LL_x = Project.Island_LL_x;
+		double Island_UR_y = Project.Island_UR_y;
+		double Island_UR_x = Project.Island_UR_x;
 		
 		int nextPoint1 = (point + 1)%4; 
 		int nextPoint2 = (point + 2)%4;
@@ -384,7 +402,13 @@ public class Grabber_Test {
 		
 	}
 	
-	public static void treeTravel(int startPoint, int endPoint, Odometer_Test odometer) {
+	/**
+	 * This method defines the routine for traveling between the sides, after the avalability of the side is determined 
+	 * @param startPoint the side traveling from
+	 * @param endPoint the side traveling to 
+	 * @param odometer the odometer used by the robot
+	 */
+	public static void treeTravel(int startPoint, int endPoint, Odometer odometer) {
 		
 		try {
 			Thread.sleep(500);
@@ -408,16 +432,16 @@ public class Grabber_Test {
 				
 			}
 			
-			leftMotor.rotate(Navigation_Test.convertAngle(WHEEL_RAD, TRACK, -direction*90), true);
-			rightMotor.rotate(-Navigation_Test.convertAngle(WHEEL_RAD, TRACK, -direction*90), false);
-			leftMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE - 8), true);
-			rightMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE -8), false);
-			Navigation_Test.lineCorrection(odometer);
-			leftMotor.rotate(Navigation_Test.convertAngle(WHEEL_RAD, TRACK, direction*90), true);
-			rightMotor.rotate(-Navigation_Test.convertAngle(WHEEL_RAD, TRACK, direction*90), false);
-			leftMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE - 8), true);
-			rightMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE -8), false);
-			Navigation_Test.lineCorrection(odometer);
+			leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, -direction*90), true);
+			rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, -direction*90), false);
+			leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE - 8), true);
+			rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE -8), false);
+			Navigation.lineCorrection(odometer);
+			leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, direction*90), true);
+			rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, direction*90), false);
+			leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE - 8), true);
+			rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE -8), false);
+			Navigation.lineCorrection(odometer);
 			
 			
 		} else if (endPoint == (startPoint + 2)%4 || endPoint == (startPoint - 2)%4) {
@@ -432,24 +456,24 @@ public class Grabber_Test {
 				
 			}
 			
-			leftMotor.rotate(Navigation_Test.convertAngle(WHEEL_RAD, TRACK, direction*90), true);
-			rightMotor.rotate(-Navigation_Test.convertAngle(WHEEL_RAD, TRACK, direction*90), false);
-			leftMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE - 8), true);
-			rightMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE -8), false);
-			Navigation_Test.lineCorrection(odometer);
-			leftMotor.rotate(Navigation_Test.convertAngle(WHEEL_RAD, TRACK, -direction*90), true);
-			rightMotor.rotate(-Navigation_Test.convertAngle(WHEEL_RAD, TRACK, -direction*90), false);
-			leftMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE - 8), true);
-			rightMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE -8), false);
-			Navigation_Test.lineCorrection(odometer);
-			leftMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE - 8), true);
-			rightMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE -8), false);
-			Navigation_Test.lineCorrection(odometer);
-			leftMotor.rotate(Navigation_Test.convertAngle(WHEEL_RAD, TRACK, -direction*90), true);
-			rightMotor.rotate(-Navigation_Test.convertAngle(WHEEL_RAD, TRACK, -direction*90), false);
-			leftMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE - 8), true);
-			rightMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE -8), false);
-			Navigation_Test.lineCorrection(odometer);
+			leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, direction*90), true);
+			rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, direction*90), false);
+			leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE - 8), true);
+			rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE -8), false);
+			Navigation.lineCorrection(odometer);
+			leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, -direction*90), true);
+			rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, -direction*90), false);
+			leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE - 8), true);
+			rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE -8), false);
+			Navigation.lineCorrection(odometer);
+			leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE - 8), true);
+			rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE -8), false);
+			Navigation.lineCorrection(odometer);
+			leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, -direction*90), true);
+			rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, -direction*90), false);
+			leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE - 8), true);
+			rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE -8), false);
+			Navigation.lineCorrection(odometer);
 			
 		}
 		

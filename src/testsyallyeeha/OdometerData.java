@@ -9,7 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Team 12
  */
 
-public class OdometerData_Test {
+public class OdometerData {
 
   // Position parameters
   private volatile double x; // x-axis position
@@ -34,13 +34,13 @@ public class OdometerData_Test {
                                                         // operation is
                                                         // over.
 
-  private static OdometerData_Test odoData = null;
+  private static OdometerData odoData = null;
 
   /**
    * Default constructor. The constructor is private. A factory is used instead such that only one
    * instance of this class is ever created.
    */
-  protected OdometerData_Test() {
+  protected OdometerData() {
     this.x = 0;
     this.y = 0;
     this.theta = 0;
@@ -52,18 +52,18 @@ public class OdometerData_Test {
    * MultipleOdometerDataException.
    * 
    * @return An OdometerData object
-   * @throws OdometerExceptions_Test
+   * @throws OdometerExceptions
    */
-  public synchronized static OdometerData_Test getOdometerData() throws OdometerExceptions_Test {
+  public synchronized static OdometerData getOdometerData() throws OdometerExceptions {
     if (odoData != null) { // Return existing object
       return odoData;
     } else if (numberOfIntances < MAX_INSTANCES) { // create object and
                                                    // return it
-      odoData = new OdometerData_Test();
+      odoData = new OdometerData();
       numberOfIntances += 1;
       return odoData;
     } else {
-      throw new OdometerExceptions_Test("Only one intance of the Odometer can be created.");
+      throw new OdometerExceptions("Only one intance of the Odometer can be created.");
     }
 
   }

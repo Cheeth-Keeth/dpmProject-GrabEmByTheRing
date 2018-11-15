@@ -18,7 +18,7 @@ import lejos.hardware.Sound;
  * @author Team 12
  *
  */
-public class Color_Test {
+public class Color {
 	// the fields in the Color class contain mean and standard deviation values for
 	// each color
 	// all data are collected using the dataObtain() and sample() methods in the
@@ -62,13 +62,13 @@ public class Color_Test {
 	private static final double orangeBMean = 0.08776;
 	private static final double orangeBDiv = 0.004811;
 
-	public static final Port portColor = Project_Test.portColor; // get the port for the light (color sensor)
-	public static final SensorModes myColor = Project_Test.myColor; // create the color sensor object;
-	public static final SampleProvider myColorSample = Project_Test.myColorSample;
-	public static final float[] sampleColor = Project_Test.sampleColor; // create an array for the sensor
+	public static final Port portColor = Project.portColor; // get the port for the light (color sensor)
+	public static final SensorModes myColor = Project.myColor; // create the color sensor object;
+	public static final SampleProvider myColorSample = Project.myColorSample;
+	public static final float[] sampleColor = Project.sampleColor; // create an array for the sensor
 																		// readings
-	private static SampleProvider usDistance = Project_Test.usDistance;
-	private static final float[] usData = Project_Test.usData;
+	private static SampleProvider usDistance = Project.usDistance;
+	private static final float[] usData = Project.usData;
 
 	private static double smallest = 1; // the max possible value for a normalized reading is 1
 	private static double colorThreshold = 0.2; // all correct readings are smaller than thus thresold, obtained in the
@@ -77,18 +77,12 @@ public class Color_Test {
 	/**
 	 * calculates the euclidean distance in RGB space
 	 * 
-	 * @param rN
-	 *            normalized red reading
-	 * @param gN
-	 *            normalized green reading
-	 * @param bN
-	 *            normalized blue reading
-	 * @param rM
-	 *            mean red value for a color
-	 * @param gM
-	 *            mean green value for a color
-	 * @param bM
-	 *            mean blue value for a color
+	 * @param rN normalized red reading
+	 * @param gN normalized green reading
+	 * @param bN normalized blue reading
+	 * @param rM mean red value for a color
+	 * @param gM mean green value for a color
+	 * @param bM mean blue value for a color
 	 * @return the euclidean distance in double
 	 */
 	public static double euclidean(double rN, double gN, double bN, double rM, double gM, double bM) {
@@ -96,7 +90,7 @@ public class Color_Test {
 	}
 
 	/**
-	 * this is used for normalizing the r value of a new reading
+	 * This is used for normalizing the r value of a new reading
 	 * 
 	 * @param r
 	 *            red reading
@@ -111,14 +105,11 @@ public class Color_Test {
 	}
 
 	/**
-	 * this is used for normalizing the g value of a new reading
+	 * This is used for normalizing the g value of a new reading
 	 * 
-	 * @param r
-	 *            red reading
-	 * @param g
-	 *            green reading
-	 * @param b
-	 *            blue reading
+	 * @param r red reading
+	 * @param g green reading
+	 * @param b blue reading
 	 * @return normalized reading
 	 */
 	public static double gNormalize(float r, float g, float b) {
@@ -126,14 +117,11 @@ public class Color_Test {
 	}
 
 	/**
-	 * this is used for normalizing the b value of a new reading
+	 * This is used for normalizing the b value of a new reading
 	 * 
-	 * @param r
-	 *            red reading
-	 * @param g
-	 *            green reading
-	 * @param b
-	 *            blue reading
+	 * @param r red reading
+	 * @param g green reading
+	 * @param b blue reading
 	 * @return normalized reading
 	 */
 	public static double bNormalize(float r, float g, float b) {

@@ -1,8 +1,8 @@
 package testsyallyeeha;
 
 import lejos.hardware.sensor.*;
-import testsyallyeeha.Odometer_Test;
-import testsyallyeeha.OdometerExceptions_Test;
+import testsyallyeeha.Odometer;
+import testsyallyeeha.OdometerExceptions;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +26,7 @@ import lejos.hardware.Sound;
  *
  */
 
-public class Project_Test {
+public class Project {
 	//The parameters for driving the robot
 	//The island parameters
 	public static double Island_LL_x = 0; //x coordinate of the lower left corner of the island
@@ -105,12 +105,15 @@ public class Project_Test {
 
 	
 	/**
-	 * This is the main method for the lab, it will prompt the user to choose which functionality to execute
-	 * in a menu, and initiates the threads needed for the lab
+	 * This is the main method for the project
+	 * <p>
+	 * It will take the parameters from the lab server, and initiates them to be used by the robot
+	 * <p>
+	 * Then it will start the odometer thread, and execute the full project routine in another thread as a sequence of methods
 	 * @param args
-	 * @throws OdometerExceptions_Test
+	 * @throws OdometerExceptions
 	 */
-	public static void main(String[] args) throws OdometerExceptions_Test{
+	public static void main(String[] args) throws OdometerExceptions{
 		Map data = WiFi.Wifi();
 		
 		int redTeam = ((Long) data.get("RedTeam")).intValue();
@@ -153,22 +156,22 @@ public class Project_Test {
 		Island_UR_x = ((Long) data.get("Island_UR_x")).intValue(); //x coordinate of the upper right corner of the island
 		Island_UR_y = ((Long) data.get("Island_UR_y")).intValue(); //y coordinate of the upper right corner of the island
 		
-		final Odometer_Test odometer = Odometer_Test.getOdometer(leftMotor, rightMotor, TRACK, WHEEL_RAD);
+		final Odometer odometer = Odometer.getOdometer(leftMotor, rightMotor, TRACK, WHEEL_RAD);
 		int buttonChoice;
 		
 		System.out.println("corner" + corner);
 		System.out.println("llx" + TN_LL_x);
 		System.out.println("lly" + TN_LL_y);
 		
-		Odometer_Test odomter;
+		Odometer odomter;
 		Thread odoThread = new Thread(odometer);
 		odoThread.start();
 		
 		(new Thread() {
 			public void run() {
 				//add method : 
-				Localizer_Test.fallingEdge(odometer);
-				Localizer_Test.lightLocalizeLite(odometer);
+				Localizer.fallingEdge(odometer);
+				Localizer.lightLocalizeLite(odometer);
 				Sound.beep();
 				try {
 					Thread.sleep(1000);
@@ -176,105 +179,13 @@ public class Project_Test {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				Navigation_Test.tunnelTravel(odometer);
+				Navigation.tunnelTravel(odometer);
 				System.out.println("x is  " + odometer.getXYT()[0] + "  y is " + odometer.getXYT()[1] + "  T is " +odometer.getXYT()[2]);
-				Grabber_Test.travelToTree(odometer);
+				Grabber.travelToTree(odometer);
 			
 			}
 		}).start();
 
-	
-//		do {
-//			lcd.clear();
-//			lcd.drawString("^ ..test1..", 0,1);
-//		    lcd.drawString("> ..test2..", 0,2);
-//		    lcd.drawString("v ..test3..", 0,3);
-//		    lcd.drawString("< ..test4..", 0,4);
-//		    buttonChoice = Button.waitForAnyPress(); 
-//		} while (buttonChoice!=Button.ID_UP && buttonChoice != Button.ID_RIGHT && buttonChoice != Button.ID_DOWN && buttonChoice != Button.ID_LEFT);
-//		
-//		Odometer_Test odomter;
-//		Thread odoThread = new Thread(odometer);
-//		odoThread.start();
-//		
-//		//test 1 
-//		if(buttonChoice==Button.ID_UP) {
-//			(new Thread() {
-//				public void run() {
-//					//add method : driver wheel radius test
-//					leftMotor.stop(true);
-//					rightMotor.rotate(-Navigation_Test.convertAngle(WHEEL_RAD, TRACK, 45), false);
-//					try {
-//						Thread.sleep(5000);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//					leftMotor.stop(true);
-//					rightMotor.rotate(-Navigation_Test.convertAngle(WHEEL_RAD, TRACK, 180), false);
-//					try {
-//						Thread.sleep(5000);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//					leftMotor.stop(true);
-//					rightMotor.rotate(-Navigation_Test.convertAngle(WHEEL_RAD, TRACK, 90), false);
-//				}
-//			}).start();
-//		}
-//		//test 2
-//		if(buttonChoice==Button.ID_RIGHT) {
-//			(new Thread() {
-//				public void run() {
-//					//add method : driver wheel base test
-//					Testers_Test.trackCheck();
-//				}
-//			}).start();
-//		}
-//		//test 3
-//		if(buttonChoice==Button.ID_DOWN) {
-//			(new Thread() {
-//				public void run() {
-//					//add method : 
-//					Localizer_Test.fallingEdge(odometer);
-//					Localizer_Test.lightLocalizeLite(odometer);
-//					Sound.beep();
-//					try {
-//						Thread.sleep(1000);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//					Navigation_Test.tunnelTravel(odometer);
-//					System.out.println("x is  " + odometer.getXYT()[0] + "  y is " + odometer.getXYT()[1] + "  T is " +odometer.getXYT()[2]);
-//					Grabber_Test.travelToTree(odometer);
-//				
-//				}
-//			}).start();
-//		}
-//		//test 4
-//		if(buttonChoice==Button.ID_LEFT) {
-//			(new Thread() {
-//				public void run() {
-//					//add method here: test the new filter 
-//					
-//					try {
-//						Thread.sleep(3000);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//					
-//					
-//				}
-//			}).start();
-//		}
-//	
-//		//stop the system when the exit button is pressed
-//	    while (Button.waitForAnyPress() != Button.ID_ESCAPE);
-//	    System.exit(0);
-//	}
 		
 	}	
 	

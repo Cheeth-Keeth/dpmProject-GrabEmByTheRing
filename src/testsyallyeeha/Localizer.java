@@ -17,42 +17,42 @@ import lejos.hardware.sensor.SensorModes;
  * @author team12
  */
 
-public class Localizer_Test {
+public class Localizer {
 
-	private static final Port portLeftLine = Project_Test.portLeftLine;
-	private static final SensorModes myLeftLine = Project_Test.myLeftLine;
-	private static final SampleProvider myLeftLineSample = Project_Test.myLeftLineSample;
+	private static final Port portLeftLine = Project.portLeftLine;
+	private static final SensorModes myLeftLine = Project.myLeftLine;
+	private static final SampleProvider myLeftLineSample = Project.myLeftLineSample;
 	private static final float[] sampleLeftLine = new float[1];
 	
-	private static final Port portRightLine = Project_Test.portRightLine;
-	private static final SensorModes myRightLine = Project_Test.myRightLine;
-	private static final SampleProvider myRightLineSample = Project_Test.myRightLineSample;
+	private static final Port portRightLine = Project.portRightLine;
+	private static final SensorModes myRightLine = Project.myRightLine;
+	private static final SampleProvider myRightLineSample = Project.myRightLineSample;
 	private static final float[] sampleRightLine = new float[1];
 	
-	private static final Port portColor = Project_Test.portColor; // get the port for the light (color sensor)
-	private static final SensorModes myColor = Project_Test.myColor; // create the color sensor object
-	private static final SampleProvider myColorSample = Project_Test.myColorSample; //set to RGB mode
-	private static final float[] sampleColor = Project_Test.sampleColor; // create an array for the sensor readings
+	private static final Port portColor = Project.portColor; // get the port for the light (color sensor)
+	private static final SensorModes myColor = Project.myColor; // create the color sensor object
+	private static final SampleProvider myColorSample = Project.myColorSample; //set to RGB mode
+	private static final float[] sampleColor = Project.sampleColor; // create an array for the sensor readings
 	
-	public static final Port usPort = Project_Test.usPort ;
+	public static final Port usPort = Project.usPort ;
 	@SuppressWarnings("resource") // Because we don't bother to close this resource
-	public static SensorModes usSensor = Project_Test.usSensor; // usSensor is the instance
-	public static SampleProvider usDistance = Project_Test.usDistance; // usDistance provides samples from
-	public static final float[] usData = Project_Test.usData; //create an array for the sensor readings
+	public static SensorModes usSensor = Project.usSensor; // usSensor is the instance
+	public static SampleProvider usDistance = Project.usDistance; // usDistance provides samples from
+	public static final float[] usData = Project.usData; //create an array for the sensor readings
 	
-	private static final EV3LargeRegulatedMotor leftMotor = Project_Test.leftMotor; //the motor for the left wheel
-	private static final EV3LargeRegulatedMotor rightMotor = Project_Test.rightMotor; //the motor for the right wheel
-	private static final EV3LargeRegulatedMotor armMotor = Project_Test.armMotor; //the motor for raising/lowering the arm 
-	private static final EV3MediumRegulatedMotor hookMotor =Project_Test.hookMotor; //the motor for motorizing the hooks 
+	private static final EV3LargeRegulatedMotor leftMotor = Project.leftMotor; //the motor for the left wheel
+	private static final EV3LargeRegulatedMotor rightMotor = Project.rightMotor; //the motor for the right wheel
+	private static final EV3LargeRegulatedMotor armMotor = Project.armMotor; //the motor for raising/lowering the arm 
+	private static final EV3MediumRegulatedMotor hookMotor =Project.hookMotor; //the motor for motorizing the hooks 
 	
-	private static final double OFF_SET = Project_Test.OFF_SET;
-	private static final double TILE_SIZE = Project_Test.TILE_SIZE;
-	private static final double DISTANCE = Project_Test.DISTANCE;
-	private static final double WHEEL_RAD = Project_Test.WHEEL_RAD; 
-	private static final double TRACK = Project_Test.TRACK;  
-	private static final int LOW_SPEED = Project_Test.LOW_SPEED; //this is the slow speed for precise movement 
-	private static final int MEDIUM_SPEED = Project_Test.MEDIUM_SPEED; //this is the medium speed for intermediate movement
-	private static final int HIGH_SPEED = Project_Test.HIGH_SPEED; //this is the fast motor speed for less precious, faster movement (long distance travel)
+	private static final double OFF_SET = Project.OFF_SET;
+	private static final double TILE_SIZE = Project.TILE_SIZE;
+	private static final double DISTANCE = Project.DISTANCE;
+	private static final double WHEEL_RAD = Project.WHEEL_RAD; 
+	private static final double TRACK = Project.TRACK;  
+	private static final int LOW_SPEED = Project.LOW_SPEED; //this is the slow speed for precise movement 
+	private static final int MEDIUM_SPEED = Project.MEDIUM_SPEED; //this is the medium speed for intermediate movement
+	private static final int HIGH_SPEED = Project.HIGH_SPEED; //this is the fast motor speed for less precious, faster movement (long distance travel)
 
 	
 	
@@ -62,7 +62,7 @@ public class Localizer_Test {
 	 * then counter-clockwise to detect the left wall (angle: beta)
 	 * @param odometer the odometer used to determine the robots orientation
 	 */
-	static void fallingEdge(Odometer_Test odometer) {
+	static void fallingEdge(Odometer odometer) {
 		int distance;
 		usDistance.fetchSample(usData, 0);
 		distance = (int) (usData[0] * 100.0); 
@@ -97,8 +97,8 @@ public class Localizer_Test {
 	  	    }	  
 	  	    
 	  	    //turn the robot counter-clockwise out of the alpha detection zone
-	  	    leftMotor.rotate(-Navigation_Test.convertAngle(WHEEL_RAD, TRACK, 45), true);
-	  	    rightMotor.rotate(Navigation_Test.convertAngle(WHEEL_RAD, TRACK, 45), false);
+	  	    leftMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 45), true);
+	  	    rightMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 45), false);
 	  	    
 	  	    //turn counter-clockwise to find the left wall and the corresponding angle beta
       	    leftMotor.stop();
@@ -126,8 +126,8 @@ public class Localizer_Test {
 	  	    }	  
 	  	    
 	  	    //move the sensor away from the beta detection zone
-	  	    leftMotor.rotate(Navigation_Test.convertAngle(WHEEL_RAD, TRACK, 45), true);
-	  	    rightMotor.rotate(-Navigation_Test.convertAngle(WHEEL_RAD, TRACK, 45), false);
+	  	    leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 45), true);
+	  	    rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 45), false);
 	  	    
       	    leftMotor.stop();
       	    rightMotor.stop();
@@ -143,8 +143,8 @@ public class Localizer_Test {
 	  	    double delta = (alpha+beta)/2 -225; 
 	  	    if (delta<0) delta = 360+delta;
 	  	    //turn to the real zero axis
-	  	    leftMotor.rotate(Navigation_Test.convertAngle(WHEEL_RAD, TRACK, (delta-odometer.getXYT()[2])), true);
-		    rightMotor.rotate(-Navigation_Test.convertAngle(WHEEL_RAD, TRACK, (delta-odometer.getXYT()[2])), false);	    
+	  	    leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, (delta-odometer.getXYT()[2])), true);
+		    rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, (delta-odometer.getXYT()[2])), false);	    
 		    
 		    //correct the odometer orientation to zero
 		    odometer.setTheta(0);
@@ -165,7 +165,7 @@ public class Localizer_Test {
 	 * then counter-clockwise to detect the back wall (angle: alpha)
 	 * @param odometer the odometer used to determine the robots orientation
 	 */	
-	static void risingEdge(Odometer_Test odometer) {
+	static void risingEdge(Odometer odometer) {
 	    int distance;    
 	    usDistance.fetchSample(usData, 0);
 		distance = (int) (usData[0] * 100.0); 	
@@ -202,16 +202,12 @@ public class Localizer_Test {
 
       	    
       	    //turn the robot counter-clockwise out of the beta detection zone
-      	    leftMotor.rotate(-Navigation_Test.convertAngle(WHEEL_RAD, TRACK, 45), true);
-      	    rightMotor.rotate(Navigation_Test.convertAngle(WHEEL_RAD, TRACK, 45), false);
+      	    leftMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 45), true);
+      	    rightMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 45), false);
       	    
       	    //turn counter-clockwise to find the back wall and the corresponding angle alpha
       	    leftMotor.stop();
       	    rightMotor.stop();
-//      	  try {
-//  			Thread.sleep(500);
-//  		} catch (InterruptedException e) {
-//  		}
       	    leftMotor.setSpeed(200); 
       	    rightMotor.setSpeed(200);
     	    
@@ -232,15 +228,11 @@ public class Localizer_Test {
       	    }	  
       	    
       	    //turn the robot counter-clockwise out of the beta detection zone
-      	    leftMotor.rotate(Navigation_Test.convertAngle(WHEEL_RAD, TRACK, 45), true);
-      	    rightMotor.rotate(-Navigation_Test.convertAngle(WHEEL_RAD, TRACK, 45), false);
+      	    leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 45), true);
+      	    rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 45), false);
       	    
       	    leftMotor.stop();
       	    rightMotor.stop();
-//      	  try {
-//  			Thread.sleep(500);
-//  		} catch (InterruptedException e) {
-//  		}
       	    leftMotor.setSpeed(200); 
       	    rightMotor.setSpeed(200);
       	    
@@ -249,8 +241,8 @@ public class Localizer_Test {
       	    double delta = (alpha+beta)/2 -45;
       	    if(delta <0) delta = 360+delta;
       	    //turn to the real 0 axis
-      	    leftMotor.rotate(Navigation_Test.convertAngle(WHEEL_RAD, TRACK, (delta-odometer.getXYT()[2])), true);
-    	    rightMotor.rotate(-Navigation_Test.convertAngle(WHEEL_RAD, TRACK, (delta-odometer.getXYT()[2])), false);
+      	    leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, (delta-odometer.getXYT()[2])), true);
+    	    rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, (delta-odometer.getXYT()[2])), false);
     	    
     	    //correct the odometer orientation to zero
     	    odometer.setTheta(0);
@@ -266,35 +258,15 @@ public class Localizer_Test {
 	 /**
 	  * The lineDetection() method is used to determine whether the left or right line detection sensor have picked up the line readings.
 	  * The detection situation is represented as integer values, for easier implementation of the method's returned result.
+	  * <p>
 	  * If only the left sensor have detected a line, the situation is labeled as 1.
-	  * If only the right sensor have detected a line, the situation is labeled as 1.
+	  * <p>
+	  * If only the right sensor have detected a line, the situation is labeled as 2.
+	  * <p>
 	  * If both sensors have detected a line, the situation is labeled as 3.
 	  * @return the current situation regarding line detection, represented as integers 
 	  */
 	public static int lineDetection() {
-		//add a  differential filter
-//		int[] readingsLeft = new int[4];
-//		int[] readingsRight = new int[4];
-//		int[] filterCoeff = {1,1,-1,-1};
-//		int differentialLeft = 0;
-//		int differentialRight = 0;
-//		for(int i = 0; i<4; i++) {
-//			myLeftLineSample.fetchSample(sampleLeftLine, 0);
-//			readingsLeft[i] = (int)(sampleLeftLine[0]*1000.0);
-//			myRightLineSample.fetchSample(sampleRightLine, 0);
-//			readingsRight[i] = (int)(sampleRightLine[0]*1000.0);
-//			System.out.println();
-//			System.out.println();
-//			differentialLeft += readingsLeft[i]*filterCoeff[i];
-//			differentialRight += readingsRight[i]*filterCoeff[i];
-//		}
-//		if(differentialLeft >= 40 && differentialRight >= 40) return 3;
-//		else if(differentialLeft >= 40) return 1;
-//		else if(differentialRight >= 40) return 2;
-//		
-//		return 0;
-		
-		///////////////////////////////////////////////////////////////////////////////////
 		int differentialLeft = 0;
 		int differentialRight = 0;
 		int leftOne;
@@ -324,18 +296,6 @@ public class Localizer_Test {
 		else if(differentialRight >= 50) return 2;	
 		else return 0;
 		
-		////////////////////////////////////////////////////////////////
-		
-//		myLeftLineSample.fetchSample(sampleLeftLine, 0);
-//		int left = (int)(sampleLeftLine[0]*1000.0);
-//		myRightLineSample.fetchSample(sampleRightLine, 0);
-//		int right = (int)(sampleRightLine[0]*1000.0);
-//		
-//		if(left <=300 && right<=300) return 3;
-//		else if(left <= 300) return 1;
-//		else if(right <= 300) return 2;	
-//		else return 0;
-		
 	}
 
 	
@@ -345,37 +305,37 @@ public class Localizer_Test {
 	 * Notice the light localization should be performed only after the ultrasonic localization orients the robot to close to the 0-axis.
 	 * @param odometer the odometer used by the robot
 	 */
-	public static void lightLocalizeLite(Odometer_Test odometer) {
+	public static void lightLocalizeLite(Odometer odometer) {
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
 		}
 		leftMotor.setSpeed(75);
 		rightMotor.setSpeed(75);
-		leftMotor.rotate(Navigation_Test.convertAngle(WHEEL_RAD, TRACK, 90), true);
-		rightMotor.rotate(-Navigation_Test.convertAngle(WHEEL_RAD, TRACK, 90), false);
+		leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 90), true);
+		rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 90), false);
 
 		Sound.beep();
-		Navigation_Test.adjustment(odometer);
+		Navigation.adjustment(odometer);
 
-		leftMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, OFF_SET), true);
-		rightMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, OFF_SET), false);
+		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), true);
+		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), false);
 		
 		leftMotor.stop();
 		rightMotor.stop();
 		
-		leftMotor.rotate(-Navigation_Test.convertAngle(WHEEL_RAD, TRACK, 90), true);
-		rightMotor.rotate(Navigation_Test.convertAngle(WHEEL_RAD, TRACK, 90), false);
+		leftMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 90), true);
+		rightMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 90), false);
 				
-		Navigation_Test.adjustment(odometer);
+		Navigation.adjustment(odometer);
 		Sound.beep();
-		leftMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, OFF_SET), true);
-		rightMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, OFF_SET), false);
+		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), true);
+		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), false);
 		
-		if(Project_Test.corner == 0) odometer.setXYT(TILE_SIZE, TILE_SIZE, 0);
-		if(Project_Test.corner == 1) odometer.setXYT(7*TILE_SIZE, TILE_SIZE, 270);
-		if(Project_Test.corner == 2) odometer.setXYT(7*TILE_SIZE, 7*TILE_SIZE, 180);
-		if(Project_Test.corner == 3) odometer.setXYT(TILE_SIZE, 7*TILE_SIZE, 90);
+		if(Project.corner == 0) odometer.setXYT(TILE_SIZE, TILE_SIZE, 0);
+		if(Project.corner == 1) odometer.setXYT(7*TILE_SIZE, TILE_SIZE, 270);
+		if(Project.corner == 2) odometer.setXYT(7*TILE_SIZE, 7*TILE_SIZE, 180);
+		if(Project.corner == 3) odometer.setXYT(TILE_SIZE, 7*TILE_SIZE, 90);
 		
 	}
 	
