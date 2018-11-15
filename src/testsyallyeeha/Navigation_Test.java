@@ -420,15 +420,24 @@ public class Navigation_Test {
 		}
 		
 		currentT = odometer.getXYT()[2];
-		if ((currentT <= 100 && currentT>= 80) || (currentT >= 170 && currentT<=190 ) ) {
+		if ( (currentT <= 100 && currentT>= 80 && pointT==0)
+				|| ((currentT <= 10 || currentT>= 350) && pointT==1)
+				|| (currentT >= 170 && currentT<=190  && pointT == 3) 
+				|| (currentT >= 260 && currentT<=280  && pointT ==2)) {
 		
-		leftMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE / 2 - 2), true);
-		rightMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE / 2 - 2), false);
+		leftMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE / 2 - 2.5), true);
+		rightMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE / 2 - 2.5), false);
 		}
 		
-		if ((currentT <= 10 || currentT>= 350) || (currentT >= 260 && currentT<=280 )) {
-			leftMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE / 2 + 2), true);
-			rightMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE / 2 + 2), false);
+		if (((currentT <= 10 || currentT>= 350) && pointT==0)
+				|| (currentT >= 260 && currentT<=280 && pointT==1)
+				|| (currentT >= 170 && currentT<=190 && pointT==2)
+				|| (currentT >= 80 && currentT<=100 && pointT==3)
+				) {
+			
+			
+			leftMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE / 2 + 2.5), true);
+			rightMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, TILE_SIZE / 2 + 2.5), false);
 		}
 		
 		leftMotor.stop(true);

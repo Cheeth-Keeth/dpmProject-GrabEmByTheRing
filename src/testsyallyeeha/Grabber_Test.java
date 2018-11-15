@@ -300,6 +300,10 @@ public class Grabber_Test {
 
 		double T_x = Project_Test.T_x; //x coordinate of the ring tree
 		double T_y = Project_Test.T_y; //y coordinate of the ring tree
+		double Island_LL_y = Project_Test.Island_LL_y;
+		double Island_LL_x = Project_Test.Island_LL_x;
+		double Island_UR_y = Project_Test.Island_UR_y;
+		double Island_UR_x = Project_Test.Island_UR_x;
 		
 		int nextPoint1 = (point + 1)%4; 
 		int nextPoint2 = (point + 2)%4;
@@ -307,7 +311,7 @@ public class Grabber_Test {
 		
 		boolean found;
 		
-		boolean[] availability = {T_y != 1, T_x != 7, T_y != 7, T_x != 1};
+		boolean[] availability = {(T_y != 1 && T_y != Island_LL_y), (T_x != 7 && T_x !=Island_UR_x), (T_y != 7 && T_y != Island_UR_y) , (T_x != 1 && T_x != Island_LL_x)};
 		
 		
 		if (!availability[nextPoint1] && !availability[nextPoint2] && !availability[nextPoint3]) {

@@ -146,6 +146,8 @@ public class Project_Test {
 			
 		}
 		
+		System.out.println(TN_LL_x + TN_LL_y);
+		
 		Island_LL_x = ((Long) data.get("Island_LL_x")).intValue(); //x coordinate of the lower left corner of the island
 		Island_LL_y = ((Long) data.get("Island_LL_y")).intValue(); //y coordinate of the lower left corner of the island
 		Island_UR_x = ((Long) data.get("Island_UR_x")).intValue(); //x coordinate of the upper right corner of the island
