@@ -75,12 +75,8 @@ public class Localizer {
 		    //turn clockwise to find the back wall and the corresponding angle alpha
       	    leftMotor.stop();
       	    rightMotor.stop();
-//      	  try {
-//  			Thread.sleep(500);
-//  		} catch (InterruptedException e) {
-//  		}
-	  	    leftMotor.setSpeed(200); 
-	  	    rightMotor.setSpeed(200);
+	  	    leftMotor.setSpeed(HIGH_SPEED); 
+	  	    rightMotor.setSpeed(HIGH_SPEED);
 	  	    
 	  	    //detect alpha
 	  	    boolean back_detected = false;
@@ -103,12 +99,8 @@ public class Localizer {
 	  	    //turn counter-clockwise to find the left wall and the corresponding angle beta
       	    leftMotor.stop();
       	    rightMotor.stop();
-//      	  try {
-//  			Thread.sleep(500);
-//  		} catch (InterruptedException e) {
-//  		}
-	  	    leftMotor.setSpeed(200); 
-	  	    rightMotor.setSpeed(200);
+	  	    leftMotor.setSpeed(HIGH_SPEED); 
+	  	    rightMotor.setSpeed(HIGH_SPEED);
 	  	    
 	  	    //detect beta
 	  	    boolean left_detected = false;
@@ -131,12 +123,8 @@ public class Localizer {
 	  	    
       	    leftMotor.stop();
       	    rightMotor.stop();
-//      	  try {
-//  			Thread.sleep(500);
-//  		} catch (InterruptedException e) {
-//  		}
-	  	    leftMotor.setSpeed(200); 
-	  	    rightMotor.setSpeed(200);
+	  	    leftMotor.setSpeed(HIGH_SPEED); 
+	  	    rightMotor.setSpeed(HIGH_SPEED);
 	  	    
 	  	    //calculate the change in angle and then turn to the adjusted orientation
 	  	    //delta is the angle of the real 0 axis when we use initial orientation as 0 axis 
@@ -178,12 +166,8 @@ public class Localizer {
     	    //turn clockwise to find the left wall and the corresponding angle beta
       	    leftMotor.stop();
       	    rightMotor.stop();
-//      	  try {
-//  			Thread.sleep(500);
-//  		} catch (InterruptedException e) {
-//  		}
-    	    leftMotor.setSpeed(200); 
-      	    rightMotor.setSpeed(200);
+    	    leftMotor.setSpeed(HIGH_SPEED); 
+      	    rightMotor.setSpeed(HIGH_SPEED);
       	    
       	    //detect beta
       	    boolean left_detected = false;
@@ -208,8 +192,8 @@ public class Localizer {
       	    //turn counter-clockwise to find the back wall and the corresponding angle alpha
       	    leftMotor.stop();
       	    rightMotor.stop();
-      	    leftMotor.setSpeed(200); 
-      	    rightMotor.setSpeed(200);
+      	    leftMotor.setSpeed(HIGH_SPEED); 
+      	    rightMotor.setSpeed(HIGH_SPEED);
     	    
       	    //detect alpha
       	    boolean back_detected = false;
@@ -233,8 +217,8 @@ public class Localizer {
       	    
       	    leftMotor.stop();
       	    rightMotor.stop();
-      	    leftMotor.setSpeed(200); 
-      	    rightMotor.setSpeed(200);
+      	    leftMotor.setSpeed(HIGH_SPEED); 
+      	    rightMotor.setSpeed(HIGH_SPEED);
       	    
       	    //calculate the change in angle and then turn to the adjusted orientation
       	    //delta is the angle of the real 0 axis in the system where the original heading was the zero axis.
@@ -255,48 +239,7 @@ public class Localizer {
 
 	}
 
-	 /**
-	  * The lineDetection() method is used to determine whether the left or right line detection sensor have picked up the line readings.
-	  * The detection situation is represented as integer values, for easier implementation of the method's returned result.
-	  * <p>
-	  * If only the left sensor have detected a line, the situation is labeled as 1.
-	  * <p>
-	  * If only the right sensor have detected a line, the situation is labeled as 2.
-	  * <p>
-	  * If both sensors have detected a line, the situation is labeled as 3.
-	  * @return the current situation regarding line detection, represented as integers 
-	  */
-	public static int lineDetection() {
-		int differentialLeft = 0;
-		int differentialRight = 0;
-		int leftOne;
-		int leftTwo;
-		int rightOne;
-		int rightTwo;
-		myLeftLineSample.fetchSample(sampleLeftLine, 0);
-		leftOne = (int)(sampleLeftLine[0]*1000.0);
-		myRightLineSample.fetchSample(sampleRightLine, 0);
-		rightOne = (int)(sampleRightLine[0]*1000.0);
-		try {
-			Thread.sleep(120);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	
-		myLeftLineSample.fetchSample(sampleLeftLine, 0);
-		leftTwo = (int)(sampleLeftLine[0]*1000.0);
-		myRightLineSample.fetchSample(sampleRightLine, 0);
-		rightTwo = (int)(sampleRightLine[0]*1000.0);
-		differentialLeft = leftOne - leftTwo;
-		differentialRight = rightOne - rightTwo;
-		
-		if(differentialLeft >= 50 && differentialRight >= 50) return 3;
-		else if(differentialLeft >= 50) return 1;
-		else if(differentialRight >= 50) return 2;	
-		else return 0;
-		
-	}
+
 
 	
 	/**
@@ -306,29 +249,33 @@ public class Localizer {
 	 * @param odometer the odometer used by the robot
 	 */
 	public static void lightLocalizeLite(Odometer odometer) {
+		leftMotor.stop(true);
+		rightMotor.stop(false);
+		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+			motor.setAcceleration(3000);
+		}
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
 		}
-		leftMotor.setSpeed(75);
-		rightMotor.setSpeed(75);
+		
+		leftMotor.setSpeed(150);
+		rightMotor.setSpeed(150);
 		leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 90), true);
 		rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 90), false);
-
-		Sound.beep();
+		
 		Navigation.adjustment(odometer);
 
 		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), true);
 		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), false);
 		
-		leftMotor.stop();
-		rightMotor.stop();
+		leftMotor.stop(true);
+		rightMotor.stop(false);
 		
 		leftMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 90), true);
 		rightMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 90), false);
 				
 		Navigation.adjustment(odometer);
-		Sound.beep();
 		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), true);
 		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), false);
 		
@@ -337,6 +284,10 @@ public class Localizer {
 		if(Project.corner == 2) odometer.setXYT(7*TILE_SIZE, 7*TILE_SIZE, 180);
 		if(Project.corner == 3) odometer.setXYT(TILE_SIZE, 7*TILE_SIZE, 90);
 		
+		//beep three times after localization
+		Sound.beep();
+		Sound.beep();
+		Sound.beep();
 	}
 	
 	

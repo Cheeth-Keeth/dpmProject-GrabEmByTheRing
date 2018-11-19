@@ -99,48 +99,29 @@ public class Navigation {
 				motor.setAcceleration(3000);
 			}
 			try {
-				Thread.sleep(500);
+				Thread.sleep(200);
 			} catch (InterruptedException e) {
 			}
-			System.out.println("dAngle is "+dAngle);
+			leftMotor.setSpeed(ROTATE_SPEED);
+			rightMotor.setSpeed(ROTATE_SPEED);
+			if(dAngle > 45 & dAngle<=135) dAngle = 90;
+			else if(dAngle > 135 & dAngle<= 225) dAngle = 180;
+			else if(dAngle > 225 & dAngle<=315) dAngle = 270;
+			else dAngle = 0;
 			turnTo(dAngle, currentT); // turn the robot to the direction of the new way point
-
+			
+			//correct itself first  -- correct issue in beta demo
+			lineCorrection(odometer);
+			
 			// move the robot towards the new way point
-			// reset the motor
-			leftMotor.stop(true);
-			rightMotor.stop(false);
-			for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
-				motor.setAcceleration(3000);
-			}
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-			}
-
 			leftMotor.setSpeed(FORWARD_SPEED);
 			rightMotor.setSpeed(FORWARD_SPEED);
-			
-//			double travelTimes = Math.floor(dDistance/TILE_SIZE);
-//			
-//			lineCorrection(odometer);
-//			
-//			for (int i = 0; i < travelTimes/TILE_SIZE; i++) {
-//				
-//				leftMotor.rotate(convertDistance(WHEEL_RAD,TILE_SIZE - 5), true);
-//				rightMotor.rotate(convertDistance(WHEEL_RAD, TILE_SIZE - 5), false);
-//				
-//				lineCorrection(odometer);
-//				
-//			}
 
-			leftMotor.rotate(convertDistance(WHEEL_RAD, dDistance - 6), true);
-			rightMotor.rotate(convertDistance(WHEEL_RAD, dDistance - 6), false);
+			leftMotor.rotate(convertDistance(WHEEL_RAD, TILE_SIZE*Math.floor(dDistance/TILE_SIZE) - 6), true);
+			rightMotor.rotate(convertDistance(WHEEL_RAD, TILE_SIZE*Math.floor(dDistance/TILE_SIZE) - 6), false);
 			
 			lineCorrection(odometer);
 			
-			///////
-			System.out.println("x is "+x+",  y is "+y);
-			//////
 		} else {
 			// four points
 			double X0 = x - 0.5; // waypoint x coordinate in cm
@@ -184,7 +165,7 @@ public class Navigation {
 				motor.setAcceleration(3000);
 			}
 			try {
-				Thread.sleep(500);
+				Thread.sleep(200);
 			} catch (InterruptedException e) {
 			}
 
@@ -232,7 +213,7 @@ public class Navigation {
 			motor.setAcceleration(2000);
 		}
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(200);
 		} catch (InterruptedException e) {
 			// There is nothing to be done here
 		}
@@ -325,9 +306,7 @@ public class Navigation {
 
 		double pointT0_x, pointT0_y, pointT1_x, pointT1_y, pointT2_x, pointT2_y, pointT3_x, pointT3_y;
 		double tunnelLength;
-		System.out.println(isTunnelVertical);
-		System.out.println("TR is x "+Project.T_x);
-		System.out.println("TR is y"+Project.T_y);
+
 		if (isTunnelVertical) {
 			tunnelLength = Math.abs(TN_LL_y - TN_UR_y);
 
@@ -519,15 +498,19 @@ public class Navigation {
 	 * @param odometer the odometer used by the robot
 	 */
 	public static void intersectionCorrection(Odometer odometer) {
+		//reset motor
 		leftMotor.stop(true);
 		rightMotor.stop(false);
+		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+			motor.setAcceleration(3000);
+		}
 		try {
-			Thread.sleep(500);
+			Thread.sleep(200);
 		} catch (InterruptedException e) {
 		}
 		
-		leftMotor.setSpeed(CORRECT_SPEED);
-		rightMotor.setSpeed(CORRECT_SPEED);
+		leftMotor.setSpeed(ROTATE_SPEED);
+		rightMotor.setSpeed(ROTATE_SPEED);
 		double fromOrientation = odometer.getXYT()[2];
 		double toOrientation;
 		if (fromOrientation >= 0 && fromOrientation < 90)
@@ -542,24 +525,57 @@ public class Navigation {
 				true);
 		rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, smallAngle(fromOrientation, toOrientation)),
 				false);
-
+		
+		//reset motor
+		leftMotor.stop(true);
+		rightMotor.stop(false);
+		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+			motor.setAcceleration(3000);
+		}
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+		}
+		leftMotor.setSpeed(CORRECT_SPEED);
+		rightMotor.setSpeed(CORRECT_SPEED);
 		adjustment(odometer);
-		Sound.beep();
+
 		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), true);
 		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), false);
 
-		leftMotor.stop();
-		rightMotor.stop();
+		//reset motor
+		leftMotor.stop(true);
+		rightMotor.stop(false);
+		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+			motor.setAcceleration(3000);
+		}
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+		}
+		leftMotor.setSpeed(ROTATE_SPEED);
+		rightMotor.setSpeed(ROTATE_SPEED);
 
 		leftMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 90), true);
 		rightMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 90), false);
 
+		//reset motor
+		leftMotor.stop(true);
+		rightMotor.stop(false);
+		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+			motor.setAcceleration(3000);
+		}
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+		}
+		leftMotor.setSpeed(CORRECT_SPEED);
+		rightMotor.setSpeed(CORRECT_SPEED);
 		adjustment(odometer);
-		Sound.beep();
+		
 		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), true);
 		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), false);
-		leftMotor.stop();
-		rightMotor.stop();
+		
 		double currentT = odometer.getXYT()[2];
 		if (currentT >= 45 && currentT < 135)
 			odometer.setTheta(90);
@@ -569,6 +585,18 @@ public class Navigation {
 			odometer.setTheta(270);
 		else
 			odometer.setTheta(0);
+		
+		//reset motor
+		leftMotor.stop(true);
+		rightMotor.stop(false);
+		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+			motor.setAcceleration(3000);
+		}
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+		}
+		
 	}
 
 	/**
@@ -579,9 +607,11 @@ public class Navigation {
 				
 		leftMotor.stop(true);
 		rightMotor.stop(false);
-		
+		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+			motor.setAcceleration(3000);
+		}
 		try {
-			Thread.sleep(500);
+			Thread.sleep(200);
 		} catch (InterruptedException e) {
 		}
 		
@@ -590,7 +620,6 @@ public class Navigation {
 
 		adjustment(odometer);
 
-		Sound.beep();
 		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), true);
 		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, OFF_SET), false);
 
@@ -605,14 +634,16 @@ public class Navigation {
 			odometer.setTheta(270);
 		else
 			odometer.setTheta(0);
-		
+
+		//reset motor --remember to set speed after using the method (the speed after this depends on when this method is used)
+		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+			motor.setAcceleration(3000);
+		}
 		try {
-			Thread.sleep(500);
+			Thread.sleep(200);
 		} catch (InterruptedException e) {
 		}
 
-		leftMotor.setSpeed(FORWARD_SPEED);
-		rightMotor.setSpeed(FORWARD_SPEED);
 	}
 
 	/**
@@ -652,6 +683,48 @@ public class Navigation {
 
 	}
 	
+	 /**
+	  * The lineDetection() method is used to determine whether the left or right line detection sensor have picked up the line readings.
+	  * The detection situation is represented as integer values, for easier implementation of the method's returned result.
+	  * <p>
+	  * If only the left sensor have detected a line, the situation is labeled as 1.
+	  * <p>
+	  * If only the right sensor have detected a line, the situation is labeled as 2.
+	  * <p>
+	  * If both sensors have detected a line, the situation is labeled as 3.
+	  * @return the current situation regarding line detection, represented as integers 
+	  */
+	public static int lineDetection() {
+		int differentialLeft = 0;
+		int differentialRight = 0;
+		int leftOne;
+		int leftTwo;
+		int rightOne;
+		int rightTwo;
+		myLeftLineSample.fetchSample(sampleLeftLine, 0);
+		leftOne = (int)(sampleLeftLine[0]*1000.0);
+		myRightLineSample.fetchSample(sampleRightLine, 0);
+		rightOne = (int)(sampleRightLine[0]*1000.0);
+		try {
+			Thread.sleep(120);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		myLeftLineSample.fetchSample(sampleLeftLine, 0);
+		leftTwo = (int)(sampleLeftLine[0]*1000.0);
+		myRightLineSample.fetchSample(sampleRightLine, 0);
+		rightTwo = (int)(sampleRightLine[0]*1000.0);
+		differentialLeft = leftOne - leftTwo;
+		differentialRight = rightOne - rightTwo;
+		
+		if(differentialLeft >= 50 && differentialRight >= 50) return 3;
+		else if(differentialLeft >= 50) return 1;
+		else if(differentialRight >= 50) return 2;	
+		else return 0;
+		
+	}
 	
 	/**
 	 * This method is used for correcting the robot's orientation at a line, it can be used for both line corrections and intersection corrections
@@ -669,14 +742,8 @@ public class Navigation {
 //		double secondT;
 //		double delT;
 		
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-		}
-		
-		
 		while (left == false || right == false) {
-			int lineStatus = Localizer.lineDetection();
+			int lineStatus = lineDetection();
 			if (lineStatus == 3) {
 				if (left == false) {
 					if (firstStop) {

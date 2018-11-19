@@ -97,6 +97,11 @@ public class Grabber {
 
 		}
 		
+		//beep three times after arriving at the point 
+		Sound.beep();
+		Sound.beep();
+		Sound.beep();
+		
 		probe(odometer, point);
 		
 		if (!FOUND) {
@@ -243,7 +248,7 @@ public class Grabber {
 				Sound.beep();
 				Sound.beep();
 				Sound.beep();
-				
+				openHook();
 			}
 
 		}
@@ -268,14 +273,6 @@ public class Grabber {
 	 */
 	public static void openHook() {
 		hookMotor.rotate(HOOK_ANGLE);
-		leftMotor.rotate(-Navigation.convertDistance(WHEEL_RAD, 15), true);
-		rightMotor.rotate(-Navigation.convertDistance(WHEEL_RAD, 15), false);
-		
-		while(true) {
-			
-			
-			
-		}
 		
 	}
 

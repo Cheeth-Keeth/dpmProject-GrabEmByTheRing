@@ -25,7 +25,6 @@ public class Color {
 	// tester class
 	// All mean values are normalized after sampling (eliminated the effect of
 	// ambient light )
-	public static boolean FOUND = false;
 	// the mean value and standard deviation of RGB values for the color Blue
 	// (normalized)
 	private static final double blueRMean = 0.149069;
@@ -73,7 +72,8 @@ public class Color {
 	private static double smallest = 1; // the max possible value for a normalized reading is 1
 	private static double colorThreshold = 0.2; // all correct readings are smaller than thus thresold, obtained in the
 												// color sampling process
-
+	public static boolean FOUND = false;
+	
 	/**
 	 * calculates the euclidean distance in RGB space
 	 * 

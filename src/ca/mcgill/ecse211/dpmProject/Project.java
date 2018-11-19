@@ -66,7 +66,7 @@ public class Project {
 	public static final double HIGH_PROBE = 14;
 	public static final double LOW_PROBE = 4.5;
 	public static final int DISTANCE = 45; //distance from the wall used by the ultrasonic sensor during the ultrasonic localization 
-	public static final int THRESHOLD = 300; //this is the line detection threshold for the line detecting color sensors
+
 	
 	//create port and object for the motors (4 in total)
 	public static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A")); //the motor for the left wheel
