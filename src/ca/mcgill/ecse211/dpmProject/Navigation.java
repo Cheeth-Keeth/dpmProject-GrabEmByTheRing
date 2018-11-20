@@ -92,18 +92,6 @@ public class Navigation {
 			double dDistance = Math.sqrt(Math.pow((x1 - currentX), 2) + Math.pow((y1 - currentY), 2));
 			double dAngle = getDAngle(x1, y1, currentX, currentY);
 
-			// reset the motor
-			leftMotor.stop(true);
-			rightMotor.stop(false);
-			for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
-				motor.setAcceleration(3000);
-			}
-			try {
-				Thread.sleep(200);
-			} catch (InterruptedException e) {
-			}
-			leftMotor.setSpeed(ROTATE_SPEED);
-			rightMotor.setSpeed(ROTATE_SPEED);
 			if(dAngle > 45 & dAngle<=135) dAngle = 90;
 			else if(dAngle > 135 & dAngle<= 225) dAngle = 180;
 			else if(dAngle > 225 & dAngle<=315) dAngle = 270;
@@ -157,17 +145,6 @@ public class Navigation {
 			// calculate the moving distance and turning angle
 			double dDistance = Math.sqrt(Math.pow((x1 - currentX), 2) + Math.pow((y1 - currentY), 2));
 			double dAngle = getDAngle(x1, y1, currentX, currentY);
-
-			// reset the motor
-			leftMotor.stop(true);
-			rightMotor.stop(false);
-			for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
-				motor.setAcceleration(3000);
-			}
-			try {
-				Thread.sleep(200);
-			} catch (InterruptedException e) {
-			}
 
 			turnTo(dAngle, currentT); // turn the robot to the direction of the new way point
 
@@ -295,6 +272,16 @@ public class Navigation {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
 
+	
+	/**
+	 * This is a generalized method for traveling to the tunnel. 
+	 * <p>
+	 * It should be called after the robot has corrected at an intersection or has localized.
+	 * <p>
+	 * It will travel to first travel to the closest intersection near the tunnel entrance, then pursue to the middle-line of the tunnel. 
+	 * Then the robot will travel tunnel length plus one tile size, before stopping on the first time outside of the tunnel, on the middle-line of the tunnel.
+	 * @param odometer the odometer used by the robot.
+	 */
 	public static void tunnelTravel(Odometer odometer) {
 		boolean isTunnelVertical;
 		if ((corner == 0 || corner == 3) && TN_UR_x > UR_x)
@@ -346,6 +333,20 @@ public class Navigation {
 
 		if (pointT == 0) {
 			Navigation.travelTo(pointT0_x, pointT0_y, odometer);
+			
+			//reset motor before rotating 
+			leftMotor.stop(true);
+			rightMotor.stop(false);
+			for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+				motor.setAcceleration(3000);
+			}
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+			}
+			leftMotor.setSpeed(ROTATE_SPEED);
+			rightMotor.setSpeed(ROTATE_SPEED);
+			
 			if (isTunnelVertical) {
 				currentT = odometer.getXYT()[2];
 				double turn = smallAngle(currentT, 90);
@@ -359,6 +360,20 @@ public class Navigation {
 			}
 		} else if (pointT == 1) {
 			Navigation.travelTo(pointT1_x, pointT1_y, odometer);
+			
+			//reset motor before rotating
+			leftMotor.stop(true);
+			rightMotor.stop(false);
+			for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+				motor.setAcceleration(3000);
+			}
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+			}
+			leftMotor.setSpeed(ROTATE_SPEED);
+			rightMotor.setSpeed(ROTATE_SPEED);
+			
 			if (isTunnelVertical) {
 				currentT = odometer.getXYT()[2];
 				double turn = smallAngle(currentT, 270);
@@ -372,6 +387,20 @@ public class Navigation {
 			}
 		} else if (pointT == 2) {
 			Navigation.travelTo(pointT2_x, pointT2_y, odometer);
+			
+			//reset motor before rotating
+			leftMotor.stop(true);
+			rightMotor.stop(false);
+			for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+				motor.setAcceleration(3000);
+			}
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+			}
+			leftMotor.setSpeed(ROTATE_SPEED);
+			rightMotor.setSpeed(ROTATE_SPEED);
+			
 			if (isTunnelVertical) {
 				currentT = odometer.getXYT()[2];
 				double turn = smallAngle(currentT, 270);
@@ -385,6 +414,20 @@ public class Navigation {
 			}
 		} else {
 			Navigation.travelTo(pointT3_x, pointT3_y, odometer);
+			
+			//reset motor before rotating
+			leftMotor.stop(true);
+			rightMotor.stop(false);
+			for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+				motor.setAcceleration(3000);
+			}
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+			}
+			leftMotor.setSpeed(ROTATE_SPEED);
+			rightMotor.setSpeed(ROTATE_SPEED);
+			
 			if (isTunnelVertical) {
 				currentT = odometer.getXYT()[2];
 				double turn = smallAngle(currentT, 90);
@@ -400,30 +443,50 @@ public class Navigation {
 		
 		
 	/////////////////////////////////////////////////////////////////////
+		//reset motor before traveling
+		leftMotor.stop(true);
+		rightMotor.stop(false);
+		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+			motor.setAcceleration(3000);
+		}
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+		}
+		leftMotor.setSpeed(FORWARD_SPEED);
+		rightMotor.setSpeed(FORWARD_SPEED);
+		
 		currentT = odometer.getXYT()[2];
 		if ( (currentT <= 100 && currentT>= 80 && pointT==0)
 				|| ((currentT <= 10 || currentT>= 350) && pointT==1)
 				|| (currentT >= 170 && currentT<=190  && pointT == 3) 
 				|| (currentT >= 260 && currentT<=280  && pointT ==2)) {
-		
 		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE / 2 - 2.5), true);
 		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE / 2 - 2.5), false);
 		}
 		
-		if (((currentT <= 10 || currentT>= 350) && pointT==0)
+		else if (((currentT <= 10 || currentT>= 350) && pointT==0)
 				|| (currentT >= 260 && currentT<=280 && pointT==1)
 				|| (currentT >= 170 && currentT<=190 && pointT==2)
 				|| (currentT >= 80 && currentT<=100 && pointT==3)
 				) {
-			
-			
 			leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE / 2 + 2.5), true);
 			rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE / 2 + 2.5), false);
 		}
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
+		//reset motor before rotating
 		leftMotor.stop(true);
 		rightMotor.stop(false);
+		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+			motor.setAcceleration(3000);
+		}
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+		}
+		leftMotor.setSpeed(ROTATE_SPEED);
+		rightMotor.setSpeed(ROTATE_SPEED);
 
 		currentX = odometer.getXYT()[0];
 		currentY = odometer.getXYT()[1];
@@ -466,7 +529,20 @@ public class Navigation {
 				rightMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 90), false);
 			}
 		}
-
+		
+		//reset motor before backing off
+		leftMotor.stop(true);
+		rightMotor.stop(false);
+		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+			motor.setAcceleration(3000);
+		}
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+		}
+		leftMotor.setSpeed(FORWARD_SPEED);
+		rightMotor.setSpeed(FORWARD_SPEED);
+		
 		leftMotor.rotate(-Navigation.convertDistance(WHEEL_RAD, 10), true);
 		rightMotor.rotate(-Navigation.convertDistance(WHEEL_RAD, 10), false);
 
@@ -485,11 +561,6 @@ public class Navigation {
 		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, (tunnelLength + 0.8) * TILE_SIZE), false);
 
 		lineCorrection(odometer);
-
-//		leftMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, (0.8)*TILE_SIZE), true);
-//		rightMotor.rotate(Navigation_Test.convertDistance(WHEEL_RAD, (0.8)*TILE_SIZE), false);
-//		
-//		lineCorrection(odometer);
 
 	}
 
@@ -663,6 +734,25 @@ public class Navigation {
 		return (Math.abs(angle1) < Math.abs(angle2) ? angle1 : angle2);
 	}
 
+	/**This method is used for determining the closest point from the current location, amongst 4 potential destinations. 
+	 * It would help the robot find the most efficient yet accurate route. 
+	 * <p> 
+	 * The Four points are labeled as point 0, point 1, point 2, point 3.
+	 * <p>
+	 * This method is heavily used in the tunnel travel and tree approaching methods.
+	 * 
+	 * @param X0 The x coordinate of point 0
+	 * @param Y0 The y coordinate of point 0
+	 * @param X1 The x coordinate of point 1
+	 * @param Y1 The y coordinate of point 1
+	 * @param X2 The x coordinate of point 2
+	 * @param Y2 The y coordinate of point 2
+	 * @param X3 The x coordinate of point 3
+	 * @param Y3 The y coordinate of point 3
+	 * @param x The current x reading of the odometer 
+	 * @param y The current y reading of the odometer
+	 * @return the label of the closest point (0 to 3)
+	 */
 	public static int closestPoint(double X0, double Y0, double X1, double Y1, double X2, double Y2, double X3,
 			double Y3, double x, double y) {
 

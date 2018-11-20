@@ -8,6 +8,7 @@ import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 
+
 /**
  * This class contains methods for the ring fetching routine and mechanism
  * 
@@ -36,6 +37,7 @@ public class Grabber {
 
 	private static final int FORWARD_SPEED = Project.HIGH_SPEED;
 	private static final int ROTATE_SPEED = Project.MEDIUM_SPEED;
+	private static final int PROBE_SPEED  = Project.LOW_SPEED;
 	private static final double WHEEL_RAD = Project.WHEEL_RAD;
 	private static final double TRACK = Project.TRACK;
 	private static final double TILE_SIZE = Project.TILE_SIZE;
@@ -79,22 +81,14 @@ public class Grabber {
 	
 		point = Navigation.closestPoint(X0, Y0, X1, Y1, X2, Y2, X3, Y3, x, y);
 		
-		if (point == 0) {
-			
+		if (point == 0) {			
 			Navigation.travelTo(X0, Y0, odometer);
-
 		} else if (point == 1) {
-
 			Navigation.travelTo(X1, Y1, odometer);
-
 		} else if (point == 2) {
-
 			Navigation.travelTo(X2, Y2, odometer);
-
 		} else if (point == 3) {
-
 			Navigation.travelTo(X3, Y3, odometer);
-
 		}
 		
 		//beep three times after arriving at the point 
@@ -123,21 +117,32 @@ public class Grabber {
 			double y = odometerData[1];
 			double t;
 			
-			int color;
-		
+			int color;	
 
 			odometerData = odometer.getXYT();
 			x = odometerData[0];
 			y = odometerData[1];
 			t = odometerData[2];
 
-			//double dAngle = Navigation_Test.getDAngle(x, y, T_x, T_y);
 			double treeOrientation = 0;
 			if (point == 1) treeOrientation = 270;
 			if (point == 2) treeOrientation = 180;
 			if (point == 3) treeOrientation = 90;
 			double angle = Navigation.smallAngle(t, treeOrientation);
-
+			
+			//reset motor before rotating
+			leftMotor.stop(true);
+			rightMotor.stop(false);
+			for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+				motor.setAcceleration(3000);
+			}
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+			}
+			leftMotor.setSpeed(ROTATE_SPEED);
+			rightMotor.setSpeed(ROTATE_SPEED);
+			
 			leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, angle), true);
 			rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, angle), false);
 			
@@ -164,12 +169,11 @@ public class Grabber {
 		armMotor.setAcceleration(15000);
 		armMotor.setSpeed(ARM_SPEED);
 		armMotor.rotate(LOW_ANGLE);
-		//move forward.////////////////////
-		leftMotor.setSpeed(100);
-		rightMotor.setSpeed(100);
+
+		leftMotor.setSpeed(PROBE_SPEED);
+		rightMotor.setSpeed(PROBE_SPEED);
 		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, LOW_PROBE), true);
 		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, LOW_PROBE), false);
-	//	Navigation_Test.lineCorrection();
 		leftMotor.stop(true);
 		rightMotor.stop(false);
 		///////////////////////////////////
@@ -193,19 +197,27 @@ public class Grabber {
 				Sound.beep();
 				Sound.beep();
 				Sound.beep();
+				openHook();
 			}
 
 		}
 		
-		//move backward /////////////////////////
-		leftMotor.setSpeed(150);
-		rightMotor.setSpeed(150);
-		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, -LOW_PROBE - 5), true);
-		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, -LOW_PROBE - 5), false);
+		//reset motor before rotating
 		leftMotor.stop(true);
 		rightMotor.stop(false);
-		///////////////////////////////////////
-		armMotor.setAcceleration(3000);
+		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+			motor.setAcceleration(3000);
+		}
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+		}
+		leftMotor.setSpeed(ROTATE_SPEED);
+		rightMotor.setSpeed(ROTATE_SPEED);
+		
+		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, -LOW_PROBE - 5), true);
+		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, -LOW_PROBE - 5), false);
+
 		resetArm();
 		
 		return color;
@@ -217,11 +229,12 @@ public class Grabber {
 	 * of the tree
 	 */
 	public static int highLevel() {
+		armMotor.setAcceleration(3000);
 		armMotor.setSpeed(ARM_SPEED);
 		armMotor.rotate(HIGH_ANGLE);
 		//move forward.////////////////////
-		leftMotor.setSpeed(100);
-		rightMotor.setSpeed(100);
+		leftMotor.setSpeed(PROBE_SPEED);
+		rightMotor.setSpeed(PROBE_SPEED);
 		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, HIGH_PROBE), true);
 		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, HIGH_PROBE), false);
 		leftMotor.stop(true);
@@ -255,15 +268,12 @@ public class Grabber {
 
 		
 		//move backward /////////////////////////
-		leftMotor.setSpeed(150);
-		rightMotor.setSpeed(150);
+		leftMotor.setSpeed(ROTATE_SPEED);
+		rightMotor.setSpeed(ROTATE_SPEED);
 		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, -HIGH_PROBE -5), true);
 		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, -HIGH_PROBE -5), false);
-		leftMotor.stop(true);
-		rightMotor.stop(false);
 		/////////////////////////////////////////
 		resetArm();
-		System.out.println("end highLevel");
 		return color;
 		
 	}
@@ -297,6 +307,7 @@ public class Grabber {
 	 * back support)
 	 */
 	public static void resetArm() {
+		armMotor.setAcceleration(3000);
 		armMotor.setSpeed(ARM_SPEED);
 		while (armMotor.getTachoCount() != 0) {
 			armMotor.backward();
@@ -330,9 +341,7 @@ public class Grabber {
 		
 		
 		if (!availability[nextPoint1] && !availability[nextPoint2] && !availability[nextPoint3]) {
-			
-			
-			
+			//do nothing			
 		} else if (availability[nextPoint1] && availability[nextPoint2] && availability[nextPoint3]) {
 			
 			
@@ -407,13 +416,18 @@ public class Grabber {
 	 */
 	public static void treeTravel(int startPoint, int endPoint, Odometer odometer) {
 		
+		//reset motor before rotating
+		leftMotor.stop(true);
+		rightMotor.stop(false);
+		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+			motor.setAcceleration(3000);
+		}
 		try {
-			Thread.sleep(500);
+			Thread.sleep(200);
 		} catch (InterruptedException e) {
 		}
-		
-		leftMotor.setSpeed(125);
-		rightMotor.setSpeed(125);
+		leftMotor.setSpeed(ROTATE_SPEED);
+		rightMotor.setSpeed(ROTATE_SPEED);
 		
 		int direction;
 		
@@ -434,6 +448,10 @@ public class Grabber {
 			leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE - 8), true);
 			rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE -8), false);
 			Navigation.lineCorrection(odometer);
+			
+			leftMotor.setSpeed(ROTATE_SPEED);
+			rightMotor.setSpeed(ROTATE_SPEED);
+			
 			leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, direction*90), true);
 			rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, direction*90), false);
 			leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE - 8), true);
@@ -458,14 +476,20 @@ public class Grabber {
 			leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE - 8), true);
 			rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE -8), false);
 			Navigation.lineCorrection(odometer);
+			leftMotor.setSpeed(ROTATE_SPEED);
+			rightMotor.setSpeed(ROTATE_SPEED);
 			leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, -direction*90), true);
 			rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, -direction*90), false);
 			leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE - 8), true);
 			rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE -8), false);
 			Navigation.lineCorrection(odometer);
+			leftMotor.setSpeed(ROTATE_SPEED);
+			rightMotor.setSpeed(ROTATE_SPEED);
 			leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE - 8), true);
 			rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE -8), false);
 			Navigation.lineCorrection(odometer);
+			leftMotor.setSpeed(ROTATE_SPEED);
+			rightMotor.setSpeed(ROTATE_SPEED);
 			leftMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, -direction*90), true);
 			rightMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, -direction*90), false);
 			leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, TILE_SIZE - 8), true);
