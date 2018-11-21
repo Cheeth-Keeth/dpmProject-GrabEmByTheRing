@@ -267,7 +267,16 @@ public class Grabber {
 		}
 
 		
-		//move backward /////////////////////////
+		//reset motor before rotating backwards
+		leftMotor.stop(true);
+		rightMotor.stop(false);
+		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
+			motor.setAcceleration(3000);
+		}
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+		}
 		leftMotor.setSpeed(ROTATE_SPEED);
 		rightMotor.setSpeed(ROTATE_SPEED);
 		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, -HIGH_PROBE -5), true);
