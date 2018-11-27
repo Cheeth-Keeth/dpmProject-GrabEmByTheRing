@@ -61,7 +61,7 @@ public class Grabber {
 	private static boolean yellow = false;
 
 	/**
-	 * This method is used to travel to the tree after coming out of the tunnel
+	 * This method is used to travel to the tree after coming out of the tunnel; upon arrival it will beep three times.
 	 * <p>
 	 * It will always go the nearest closest side of the three, as each side is
 	 * defined by first intersection the branches on that side are facing
@@ -117,8 +117,12 @@ public class Grabber {
 
 	/**
 	 * This method is used for probing the rings once the robot arrives at a side of
-	 * the tree
-	 * 
+	 * the tree; the lower branches will be probed first, then the higher ones.
+	 * <p>
+	 * Due to the nature of the design, the arm motor will only be about to pull up more than 2 rings on the hook; as a result, the robot will not probe the lower branches once there are 2 rings on the hook.
+	 * Instead, it will focus on the higher branches.
+	 * <p>
+	 * Once the desired amount of rings are collected, it will stop the probing process and prepare to return to the starting corner
 	 * @param odometer the odometer used by the robot
 	 * @param point    the intersection corresponding to the side the robot is
 	 *                 probing
@@ -190,7 +194,7 @@ public class Grabber {
 		leftMotor.rotate(-Navigation.convertDistance(WHEEL_RAD, 10), true);
 		rightMotor.rotate(-Navigation.convertDistance(WHEEL_RAD, 10), false);
 		armMotor.rotate(LOW_ANGLE);
-		closeHook(); //////////////////////////////////////////////////////////////////////////////////
+		closeHook(); 
 		// reset motor before rotating
 		leftMotor.stop(true);
 		rightMotor.stop(false);
@@ -205,7 +209,7 @@ public class Grabber {
 		rightMotor.setSpeed(PROBE_SPEED);
 		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, LOW_PROBE), true);
 		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, LOW_PROBE), false);
-		///////////////////////////////////
+
 		int color = Color.color();
 
 		if (color == 1 || color == 2 || color == 3 || color == 4) {
@@ -244,7 +248,7 @@ public class Grabber {
 			}
 
 		}
-		openHook(); /////////////////////////////////////////////////////////////////
+		openHook(); 
 		// reset motor before rotating
 		leftMotor.stop(true);
 		rightMotor.stop(false);
@@ -282,23 +286,18 @@ public class Grabber {
 	}
 
 	/**
-	 * This method is used for turning the arm to fetch the rings on the lower level
+	 * This method is used for fetching the rings on the lower level
 	 * of the tree
 	 */
 	public static int highLevel() {
-
-//		armMotor.setAcceleration(500);
-//		armMotor.setSpeed(100);
-//		armMotor.rotate(HIGH_ANGLE);
-
-		closeHook();/////////////////////////////////////////////////////////////
+		closeHook();
 		leftMotor.setSpeed(PROBE_SPEED);
 		rightMotor.setSpeed(PROBE_SPEED);
 		leftMotor.rotate(Navigation.convertDistance(WHEEL_RAD, HIGH_PROBE), true);
 		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, HIGH_PROBE), false);
 		leftMotor.stop(true);
 		rightMotor.stop(false);
-		///////////////////////////////////
+
 		int color = Color.color();
 
 		if (color == 1 || color == 2 || color == 3 || color == 4) {
@@ -338,7 +337,7 @@ public class Grabber {
 
 		}
 
-		openHook(); /////////////////////////////
+		openHook(); 
 		
 		// reset motor before rotating backward
 		leftMotor.stop(true);
@@ -378,7 +377,7 @@ public class Grabber {
 	}
 
 	/**
-	 * this method is used to unload the ring using the arm motor
+	 * This method is used to unload the ring using the arm motor when reading the starting corner
 	 */
 	public static void unload() {
 
@@ -455,7 +454,7 @@ public class Grabber {
 	}
 
 	/**
-	 * this method is used to reset the arm to the initial position (falling on the
+	 * This method is used to reset the arm to the initial position (falling on the
 	 * back support)
 	 */
 	public static void resetArm() {
