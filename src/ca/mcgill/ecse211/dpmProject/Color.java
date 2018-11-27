@@ -72,7 +72,6 @@ public class Color {
 	private static double smallest = 1; // the max possible value for a normalized reading is 1
 	private static double colorThreshold = 0.2; // all correct readings are smaller than thus thresold, obtained in the
 												// color sampling process
-	public static boolean FOUND = false;
 	
 	/**
 	 * calculates the euclidean distance in RGB space
@@ -136,46 +135,81 @@ public class Color {
 	 */
 	public static int color() {
 		// obtain reading from sensor and normalize them
-		myColorSample.fetchSample(sampleColor, 0);
-		double r = rNormalize(sampleColor[0] * 1000, sampleColor[1] * 1000, sampleColor[2] * 1000);
-		double g = gNormalize(sampleColor[0] * 1000, sampleColor[1] * 1000, sampleColor[2] * 1000);
-		double b = bNormalize(sampleColor[0] * 1000, sampleColor[1] * 1000, sampleColor[2] * 1000);
+		int count = 5;
+		int lastColor = -1;
+		int smallestColor = -1;
+		int counter = 0;
+		
+		while (counter <= count) {
+			myColorSample.fetchSample(sampleColor, 0);
+			double r = rNormalize(sampleColor[0] * 1000, sampleColor[1] * 1000, sampleColor[2] * 1000);
+			double g = gNormalize(sampleColor[0] * 1000, sampleColor[1] * 1000, sampleColor[2] * 1000);
+			double b = bNormalize(sampleColor[0] * 1000, sampleColor[1] * 1000, sampleColor[2] * 1000);
 
-		double dBlue = euclidean(r, g, b, blueRMean, blueGMean, blueBMean); // check Euclidean distance from being Blue
-		double dGreen = euclidean(r, g, b, greenRMean, greenGMean, greenBMean);// check Euclidean distance from being
-																				// Green
-		double dYellow = euclidean(r, g, b, yellowRMean, yellowGMean, yellowBMean);// check Euclidean distance from
-																					// being Yellow
-		double dOrange = euclidean(r, g, b, orangeRMean, orangeGMean, orangeBMean); // check Euclidean distance from
-																					// being Orange
+			double dBlue = euclidean(r, g, b, blueRMean, blueGMean, blueBMean); // check Euclidean distance from being
+																				// Blue
+			double dGreen = euclidean(r, g, b, greenRMean, greenGMean, greenBMean);// check Euclidean distance from
+																					// being Green
+			double dYellow = euclidean(r, g, b, yellowRMean, yellowGMean, yellowBMean);// check Euclidean distance from
+																						// being Yellow
+			double dOrange = euclidean(r, g, b, orangeRMean, orangeGMean, orangeBMean); // check Euclidean distance from
+																						// being Orange
 
-		// rank the distances and choose the color --smallest euclidean
-		double[] d = { dBlue, dGreen, dYellow, dOrange };
-		for (int i = 0; i < 4; i++) {
-			if (i == 0)
-				smallest = d[i];
-			else if (d[i] < smallest)
-				smallest = d[i];
-		}
-		System.out.println(r + ", " + g + ", " + b);
-		System.out.println(dBlue + ", " + dGreen + ", " + dYellow + ", " + dOrange);
-		// return the TR value
-		if (smallest <= colorThreshold) {
-			FOUND = true;
-			if (smallest == dBlue)
-				return 1; // return blue
-			if (smallest == dGreen)
-				return 2; // return green
-			if (smallest == dYellow)
-				return 3; // return yellow
-			if (smallest == dOrange) {
-				FOUND = false;
-				return 4; // return orange
-			} else {
-				FOUND = false;
-				return 0;
+			// rank the distances and choose the color --smallest euclidean
+			double[] d = { dBlue, dGreen, dYellow, dOrange };
+			for (int i = 0; i < 4; i++) {
+				if (i == 0)
+					smallest = d[i];
+				else if (d[i] < smallest)
+					smallest = d[i];
 			}
-		} else
+			//System.out.println(r + ", " + g + ", " + b);
+			//System.out.println(dBlue + ", " + dGreen + ", " + dYellow + ", " + dOrange);
+			// return the TR value
+			if (smallest <= colorThreshold) {
+				//System.out.println(smallest);
+				
+				
+				if (smallest == dBlue) {
+						smallestColor = 1; // return blue
+				}
+				else if (smallest == dGreen) {
+					smallestColor = 2; // return blue
+				}
+				else if (smallest == dYellow) {
+						smallestColor = 3; // return blue
+				}
+				else if (smallest == dOrange) {
+					smallestColor = 4; // return blue
+				} else {
+					System.out.println("other color");
+					smallestColor = 0;
+				}
+				System.out.println("smallest color is "+smallestColor);
+				
+				
+				
+				if(lastColor == smallestColor) {
+					//Syst.out.println(counter);
+					counter++;
+				}
+				else if(counter == 0) {
+					lastColor = smallestColor;
+					//em.out.println("zero");
+				}
+				else if(lastColor != smallestColor) {
+					System.out.println("reset counter");
+						counter = 0;
+						lastColor = smallestColor;
+					}
+				
+				if(counter == count) {
+					return lastColor;
+				}
+				
+			} else
+				return 0;
+		}
 			return 0;
 
 	}
