@@ -15,26 +15,13 @@ import lejos.hardware.sensor.SensorModes;
 /**
  * This class is used for localizing the robot using the ultrasonic sensor and
  * the 2 line detection sensors
+ * <p> 
+ * The localization process can be carried out under 25 seconds
  * 
  * @author team12
  */
 
 public class Localizer {
-
-	private static final Port portLeftLine = Project.portLeftLine;
-	private static final SensorModes myLeftLine = Project.myLeftLine;
-	private static final SampleProvider myLeftLineSample = Project.myLeftLineSample;
-	private static final float[] sampleLeftLine = new float[1];
-
-	private static final Port portRightLine = Project.portRightLine;
-	private static final SensorModes myRightLine = Project.myRightLine;
-	private static final SampleProvider myRightLineSample = Project.myRightLineSample;
-	private static final float[] sampleRightLine = new float[1];
-
-	private static final Port portColor = Project.portColor; // get the port for the light (color sensor)
-	private static final SensorModes myColor = Project.myColor; // create the color sensor object
-	private static final SampleProvider myColorSample = Project.myColorSample; // set to RGB mode
-	private static final float[] sampleColor = Project.sampleColor; // create an array for the sensor readings
 
 	public static final Port usPort = Project.usPort;
 	@SuppressWarnings("resource") // Because we don't bother to close this resource
@@ -44,24 +31,28 @@ public class Localizer {
 
 	private static final EV3LargeRegulatedMotor leftMotor = Project.leftMotor; // the motor for the left wheel
 	private static final EV3LargeRegulatedMotor rightMotor = Project.rightMotor; // the motor for the right wheel
-	private static final EV3LargeRegulatedMotor armMotor = Project.armMotor; // the motor for raising/lowering the arm
-	private static final EV3MediumRegulatedMotor hookMotor = Project.hookMotor; // the motor for motorizing the hooks
 
-	private static final double OFF_SET = Project.OFF_SET;
-	private static final double TILE_SIZE = Project.TILE_SIZE;
-	private static final double DISTANCE = Project.DISTANCE;
-	private static final double WHEEL_RAD = Project.WHEEL_RAD;
-	private static final double TRACK = Project.TRACK;
+	private static final double OFF_SET = Project.OFF_SET; // the distance from the 2 front light sensors and the wheel
+															// base
+	private static final double TILE_SIZE = Project.TILE_SIZE; // the tile length of the grid
+	private static final double DISTANCE = Project.DISTANCE; // the distance to be detected by the ultrasonic sensor
+																// during the rsing/falling edge process
+	private static final double WHEEL_RAD = Project.WHEEL_RAD; // the radius of the wheels
+	private static final double TRACK = Project.TRACK; // the wheel base of the robot
 	private static final int LOW_SPEED = Project.LOW_SPEED; // this is the slow speed for precise movement
-	private static final int MEDIUM_SPEED = Project.MEDIUM_SPEED; // this is the medium speed for intermediate movement
-	private static final int HIGH_SPEED = Project.HIGH_SPEED; // this is the fast motor speed for less precious, faster
-																// movement (long distance travel)
+	private static final int HIGH_SPEED = 350; // this is the fast motor speed for less precious, faster
+												// movement (long distance travel)
 
 	/**
 	 * This is the falling edge method used when the robots starts facing away from
-	 * the wall (distance larger than D) It will first turn clockwise to detect the
-	 * back wall (angle: alpha) then counter-clockwise to detect the left wall
-	 * (angle: beta)
+	 * the wall (distance larger than D).
+	 * <p>
+	 * It will first turn clockwise to detect the back wall (angle: alpha) then
+	 * counter-clockwise to detect the left wall (angle: beta), then calculate and
+	 * perform the angle needed to face towards +90 degrees from the 0 degree axis.
+	 * <p>
+	 * If the robot determines rising edge is needed here (the sensor's initial
+	 * reading smaller than the distance value), it will call rising edge instead
 	 * 
 	 * @param odometer the odometer used to determine the robots orientation
 	 */
@@ -204,9 +195,14 @@ public class Localizer {
 
 	/**
 	 * This is the rising edge method used when the robots starts facing the wall
-	 * (distance smaller than D); It will first turn clockwise to detect the left
-	 * wall (angle: beta) then counter-clockwise to detect the back wall (angle:
-	 * alpha)
+	 * (distance smaller than D)
+	 * <p>
+	 * It will first turn clockwise to detect the left wall (angle: beta) then
+	 * counter-clockwise to detect the back wall (angle: alpha), then calculate and
+	 * perform the angle needed to face towards +90 degrees from the 0 degree axis.
+	 * <p>
+	 * If the robot determines falling edge is needed here (the sensor's initial
+	 * reading greater than the distance value), it will call falling edge instead
 	 * 
 	 * @param odometer the odometer used to determine the robots orientation
 	 */
@@ -355,6 +351,7 @@ public class Localizer {
 
 	/**
 	 * The lightLocalizerLite() method is simplified version of light localization.
+	 * <p>
 	 * It utilizes the two light sensors installed in the front of the robot, and
 	 * performs direction and position adjustment on the grid lines. Notice the
 	 * light localization should be performed only after the ultrasonic localization

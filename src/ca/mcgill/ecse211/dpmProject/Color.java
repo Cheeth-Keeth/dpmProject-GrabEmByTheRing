@@ -135,7 +135,7 @@ public class Color {
 	 */
 	public static int color() {
 		// obtain reading from sensor and normalize them
-		int count = 5;
+		int count = 12;
 		int lastColor = -1;
 		int smallestColor = -1;
 		int counter = 0;
@@ -163,29 +163,27 @@ public class Color {
 				else if (d[i] < smallest)
 					smallest = d[i];
 			}
-			//System.out.println(r + ", " + g + ", " + b);
-			//System.out.println(dBlue + ", " + dGreen + ", " + dYellow + ", " + dOrange);
+
 			// return the TR value
 			if (smallest <= colorThreshold) {
-				//System.out.println(smallest);
-				
+				System.out.println(smallest);
 				
 				if (smallest == dBlue) {
 						smallestColor = 1; // return blue
 				}
 				else if (smallest == dGreen) {
-					smallestColor = 2; // return blue
+					smallestColor = 2; // return green
 				}
 				else if (smallest == dYellow) {
-						smallestColor = 3; // return blue
+						smallestColor = 3; // return yellow
 				}
 				else if (smallest == dOrange) {
-					smallestColor = 4; // return blue
+					smallestColor = 4; // return orange
 				} else {
 					System.out.println("other color");
 					smallestColor = 0;
 				}
-				System.out.println("smallest color is "+smallestColor);
+				System.out.println("smallest color is " + smallestColor);
 				
 				
 				
@@ -203,7 +201,7 @@ public class Color {
 						lastColor = smallestColor;
 					}
 				
-				if(counter == count) {
+				if( (counter == (count - 5) ) && (lastColor != 0) ) {
 					return lastColor;
 				}
 				
