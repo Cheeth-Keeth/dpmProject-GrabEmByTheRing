@@ -10,7 +10,8 @@ import lejos.hardware.motor.EV3MediumRegulatedMotor;
 
 /**
  * This class contains methods for the ring fetching routine and mechanism
- * 
+ * <p>
+ * The robot can grab 
  * @author Team12
  *
  */
@@ -50,7 +51,7 @@ public class Grabber {
 
 	public static int rings = 0;
 	public static final int LOWER_MAX = 2;
-	public static final int TOTAL_RING = 3;
+	public static final int TOTAL_RING = Project.TOTAL_RING;
 	public static int currentPoint;
 	public static boolean goHome = false;
 

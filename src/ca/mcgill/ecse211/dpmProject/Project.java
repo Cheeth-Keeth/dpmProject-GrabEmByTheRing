@@ -101,7 +101,7 @@ public class Project {
 	public static final SampleProvider myRightLineSample = myRightLine.getMode("Red"); //set to Red mode
 	public static final float[] sampleRightLine = new float[myRightLine.sampleSize()]; // create an array for the sensor readings 
 																			
-
+	public static final int TOTAL_RING = 3; //the total number of rings to be grabbed by the robot
 	
 	/**
 	 * This is the main method for the project
