@@ -65,14 +65,14 @@ public class Color {
 	public static final SensorModes myColor = Project.myColor; // create the color sensor object;
 	public static final SampleProvider myColorSample = Project.myColorSample;
 	public static final float[] sampleColor = Project.sampleColor; // create an array for the sensor
-																		// readings
+																	// readings
 	private static SampleProvider usDistance = Project.usDistance;
 	private static final float[] usData = Project.usData;
 
 	private static double smallest = 1; // the max possible value for a normalized reading is 1
 	private static double colorThreshold = 0.2; // all correct readings are smaller than thus thresold, obtained in the
 												// color sampling process
-	
+
 	/**
 	 * calculates the euclidean distance in RGB space
 	 * 
@@ -91,12 +91,9 @@ public class Color {
 	/**
 	 * This is used for normalizing the r value of a new reading
 	 * 
-	 * @param r
-	 *            red reading
-	 * @param g
-	 *            green reading
-	 * @param b
-	 *            blue reading
+	 * @param r red reading
+	 * @param g green reading
+	 * @param b blue reading
 	 * @return normalized reading
 	 */
 	public static double rNormalize(float r, float g, float b) {
@@ -139,7 +136,7 @@ public class Color {
 		int lastColor = -1;
 		int smallestColor = -1;
 		int counter = 0;
-		
+
 		while (counter <= count) {
 			myColorSample.fetchSample(sampleColor, 0);
 			double r = rNormalize(sampleColor[0] * 1000, sampleColor[1] * 1000, sampleColor[2] * 1000);
@@ -167,48 +164,41 @@ public class Color {
 			// return the TR value
 			if (smallest <= colorThreshold) {
 				System.out.println(smallest);
-				
+
 				if (smallest == dBlue) {
-						smallestColor = 1; // return blue
-				}
-				else if (smallest == dGreen) {
+					smallestColor = 1; // return blue
+				} else if (smallest == dGreen) {
 					smallestColor = 2; // return green
-				}
-				else if (smallest == dYellow) {
-						smallestColor = 3; // return yellow
-				}
-				else if (smallest == dOrange) {
+				} else if (smallest == dYellow) {
+					smallestColor = 3; // return yellow
+				} else if (smallest == dOrange) {
 					smallestColor = 4; // return orange
 				} else {
 					System.out.println("other color");
 					smallestColor = 0;
 				}
 				System.out.println("smallest color is " + smallestColor);
-				
-				
-				
-				if(lastColor == smallestColor) {
-					//Syst.out.println(counter);
+
+				if (lastColor == smallestColor) {
+					// Syst.out.println(counter);
 					counter++;
-				}
-				else if(counter == 0) {
+				} else if (counter == 0) {
 					lastColor = smallestColor;
-					//em.out.println("zero");
-				}
-				else if(lastColor != smallestColor) {
+					// em.out.println("zero");
+				} else if (lastColor != smallestColor) {
 					System.out.println("reset counter");
-						counter = 0;
-						lastColor = smallestColor;
-					}
-				
-				if( (counter == (count - 5) ) && (lastColor != 0) ) {
+					counter = 0;
+					lastColor = smallestColor;
+				}
+
+				if ((counter == (count - 5)) && (lastColor != 0)) {
 					return lastColor;
 				}
-				
+
 			} else
 				return 0;
 		}
-			return 0;
+		return 0;
 
 	}
 

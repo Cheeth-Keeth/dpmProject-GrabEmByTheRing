@@ -11,7 +11,8 @@ import lejos.hardware.motor.EV3MediumRegulatedMotor;
 /**
  * This class contains methods for the ring fetching routine and mechanism
  * <p>
- * The robot can grab 
+ * The robot can grab
+ * 
  * @author Team12
  *
  */
@@ -50,7 +51,7 @@ public class Grabber {
 	private static final double TN_UR_y = Project.TN_UR_y; // y coordinate of the upper right of the tunnel
 
 	public static int rings = 0;
-	public static final int LOWER_MAX = 2;
+	public static final int LOWER_MAX = 2; //the maximum amount of rings that can be lifted by thearm motor
 	public static final int TOTAL_RING = Project.TOTAL_RING;
 	public static int currentPoint;
 	public static boolean goHome = false;
@@ -61,7 +62,8 @@ public class Grabber {
 	private static boolean yellow = false;
 
 	/**
-	 * This method is used to travel to the tree after coming out of the tunnel; upon arrival it will beep three times.
+	 * This method is used to travel to the tree after coming out of the tunnel;
+	 * upon arrival it will beep three times.
 	 * <p>
 	 * It will always go the nearest closest side of the three, as each side is
 	 * defined by first intersection the branches on that side are facing
@@ -119,10 +121,14 @@ public class Grabber {
 	 * This method is used for probing the rings once the robot arrives at a side of
 	 * the tree; the lower branches will be probed first, then the higher ones.
 	 * <p>
-	 * Due to the nature of the design, the arm motor will only be about to pull up more than 2 rings on the hook; as a result, the robot will not probe the lower branches once there are 2 rings on the hook.
-	 * Instead, it will focus on the higher branches.
+	 * Due to the nature of the design, the arm motor will only be about to pull up
+	 * more than 2 rings on the hook; as a result, the robot will not probe the
+	 * lower branches once there are 2 rings on the hook. Instead, it will focus on
+	 * the higher branches.
 	 * <p>
-	 * Once the desired amount of rings are collected, it will stop the probing process and prepare to return to the starting corner
+	 * Once the desired amount of rings are collected, it will stop the probing
+	 * process and prepare to return to the starting corner
+	 * 
 	 * @param odometer the odometer used by the robot
 	 * @param point    the intersection corresponding to the side the robot is
 	 *                 probing
@@ -194,7 +200,7 @@ public class Grabber {
 		leftMotor.rotate(-Navigation.convertDistance(WHEEL_RAD, 10), true);
 		rightMotor.rotate(-Navigation.convertDistance(WHEEL_RAD, 10), false);
 		armMotor.rotate(LOW_ANGLE);
-		closeHook(); 
+		closeHook();
 		// reset motor before rotating
 		leftMotor.stop(true);
 		rightMotor.stop(false);
@@ -248,7 +254,7 @@ public class Grabber {
 			}
 
 		}
-		openHook(); 
+		openHook();
 		// reset motor before rotating
 		leftMotor.stop(true);
 		rightMotor.stop(false);
@@ -286,8 +292,7 @@ public class Grabber {
 	}
 
 	/**
-	 * This method is used for fetching the rings on the lower level
-	 * of the tree
+	 * This method is used for fetching the rings on the lower level of the tree
 	 */
 	public static int highLevel() {
 		closeHook();
@@ -337,8 +342,8 @@ public class Grabber {
 
 		}
 
-		openHook(); 
-		
+		openHook();
+
 		// reset motor before rotating backward
 		leftMotor.stop(true);
 		rightMotor.stop(false);
@@ -377,7 +382,8 @@ public class Grabber {
 	}
 
 	/**
-	 * This method is used to unload the ring using the arm motor when reading the starting corner
+	 * This method is used to unload the ring using the arm motor when reading the
+	 * starting corner
 	 */
 	public static void unload() {
 
@@ -415,7 +421,7 @@ public class Grabber {
 		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, 5), false);
 		leftMotor.stop(true);
 		rightMotor.stop(false);
-		
+
 		leftMotor.stop(true);
 		rightMotor.stop(false);
 		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
@@ -429,7 +435,7 @@ public class Grabber {
 		rightMotor.setSpeed(FORWARD_SPEED + 200);
 		leftMotor.rotate(0, true);
 		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, 3), false);
-		
+
 		leftMotor.stop(true);
 		rightMotor.stop(false);
 		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
@@ -445,7 +451,7 @@ public class Grabber {
 		rightMotor.rotate(Navigation.convertDistance(WHEEL_RAD, 5), false);
 		leftMotor.stop(true);
 		rightMotor.stop(false);
-		
+
 		Sound.beep();
 		Sound.beep();
 		Sound.beep();
@@ -540,7 +546,6 @@ public class Grabber {
 			goHome = true;
 			treeTravel(currentPoint, point, odometer);
 
-
 		} else if (availability[nextPoint1] && !availability[nextPoint2] && !availability[nextPoint3]) {
 
 			treeTravel(point, nextPoint1, odometer);
@@ -548,7 +553,7 @@ public class Grabber {
 
 			goHome = true;
 			treeTravel(currentPoint, point, odometer);
-			
+
 		} else if (!availability[nextPoint1] && availability[nextPoint2] && availability[nextPoint3]) {
 
 			treeTravel(point, nextPoint3, odometer);

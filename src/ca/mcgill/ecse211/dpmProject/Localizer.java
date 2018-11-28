@@ -15,7 +15,7 @@ import lejos.hardware.sensor.SensorModes;
 /**
  * This class is used for localizing the robot using the ultrasonic sensor and
  * the 2 line detection sensors
- * <p> 
+ * <p>
  * The localization process can be carried out under 25 seconds
  * 
  * @author team12
@@ -411,11 +411,11 @@ public class Localizer {
 		if (Project.corner == 0)
 			odometer.setXYT(TILE_SIZE, TILE_SIZE, 0);
 		if (Project.corner == 1)
-			odometer.setXYT(7 * TILE_SIZE, TILE_SIZE, 270);
+			odometer.setXYT(14 * TILE_SIZE, TILE_SIZE, 270);
 		if (Project.corner == 2)
-			odometer.setXYT(7 * TILE_SIZE, 7 * TILE_SIZE, 180);
+			odometer.setXYT(14 * TILE_SIZE, 8 * TILE_SIZE, 180);
 		if (Project.corner == 3)
-			odometer.setXYT(TILE_SIZE, 7 * TILE_SIZE, 90);
+			odometer.setXYT(TILE_SIZE, 8 * TILE_SIZE, 90);
 
 		// beep three times after localization
 		Sound.beep();

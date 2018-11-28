@@ -125,10 +125,10 @@ public class Navigation {
 			} catch (InterruptedException e) {
 			}
 
-			leftMotor.setSpeed(FORWARD_SPEED - 50);
-			rightMotor.setSpeed(FORWARD_SPEED - 50);
-			leftMotor.rotate(convertDistance(WHEEL_RAD, -6), true);
-			rightMotor.rotate(convertDistance(WHEEL_RAD, -6), false);
+			leftMotor.setSpeed(ROTATE_SPEED);
+			rightMotor.setSpeed(ROTATE_SPEED);
+			leftMotor.rotate(convertDistance(WHEEL_RAD, -5), true);
+			rightMotor.rotate(convertDistance(WHEEL_RAD, -5), false);
 			// correct issue in beta demo
 			lineCorrection(odometer);
 
@@ -167,8 +167,8 @@ public class Navigation {
 			} catch (InterruptedException e) {
 			}
 
-			leftMotor.setSpeed(FORWARD_SPEED);
-			rightMotor.setSpeed(FORWARD_SPEED);
+			leftMotor.setSpeed(ROTATE_SPEED);
+			rightMotor.setSpeed(ROTATE_SPEED);
 			leftMotor.rotate(convertDistance(WHEEL_RAD, -5), true);
 			rightMotor.rotate(convertDistance(WHEEL_RAD, -5), false);
 
@@ -684,17 +684,17 @@ public class Navigation {
 			turnAngle = smallAngle(currentT, 225);
 
 		} else if (corner == 1) {
-			travelTo(7, 1, odometer); //////////////////////////// CHANGE TO BIG MAP
+			travelTo(14, 1, odometer); //////////////////////////// CHANGE TO BIG MAP
 
 			currentT = odometer.getXYT()[2];
 			turnAngle = smallAngle(currentT, 135);
 		} else if (corner == 2) {
-			travelTo(7, 7, odometer);//////////////////////////////// CHANGE TO BIG MAP
+			travelTo(14, 8, odometer);//////////////////////////////// CHANGE TO BIG MAP
 
 			currentT = odometer.getXYT()[2];
 			turnAngle = smallAngle(currentT, 45);
 		} else {
-			travelTo(1, 7, odometer);//////////////////////////////// CHANGE TO BIG MAP
+			travelTo(1, 8321, odometer);//////////////////////////////// CHANGE TO BIG MAP
 
 			currentT = odometer.getXYT()[2];
 			turnAngle = smallAngle(currentT, 315);
@@ -963,7 +963,7 @@ public class Navigation {
 		myRightLineSample.fetchSample(sampleRightLine, 0);
 		rightOne = (int) (sampleRightLine[0] * 1000.0);
 		try {
-			Thread.sleep(120);
+			Thread.sleep(80);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
