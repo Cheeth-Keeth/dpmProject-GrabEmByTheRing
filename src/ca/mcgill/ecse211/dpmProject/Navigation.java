@@ -717,7 +717,6 @@ public class Navigation {
 		Grabber.unload();
 	}
 
-
 	/**
 	 * This method is used for correcting the robot's odometer and position,
 	 * orientation at an intersection
@@ -781,7 +780,7 @@ public class Navigation {
 		}
 		leftMotor.setSpeed(ROTATE_SPEED);
 		rightMotor.setSpeed(ROTATE_SPEED);
-		adjustment(odometer);
+		//adjustment(odometer); -------->  issue in the beta demo 
 
 		leftMotor.rotate(-Navigation.convertAngle(WHEEL_RAD, TRACK, 90), true);
 		rightMotor.rotate(Navigation.convertAngle(WHEEL_RAD, TRACK, 90), false);
@@ -825,7 +824,6 @@ public class Navigation {
 		}
 
 	}
-	
 
 	/**
 	 * This method is used for correcting the robot's odometer and orientation at a
@@ -937,10 +935,10 @@ public class Navigation {
 	}
 
 	/**
-	 * This method is used to determine whether the left or right
-	 * line detection sensor have picked up the line readings. The detection
-	 * situation is represented as integer values, for easier implementation of the
-	 * method's returned result.
+	 * This method is used to determine whether the left or right line detection
+	 * sensor have picked up the line readings. The detection situation is
+	 * represented as integer values, for easier implementation of the method's
+	 * returned result.
 	 * <p>
 	 * If only the left sensor have detected a line, the situation is labeled as 1.
 	 * <p>
